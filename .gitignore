@@ -1,0 +1,38 @@
+# Environment variables (SECRETS!)
+.env
+.env.local
+.env.development
+.env.production
+.env.backup
+.env.ready
+*.pem
+
+# Node modules
+node_modules/
+
+# Next.js
+.next/
+out/
+
+# Vercel
+.vercel/
+
+# Testing
+coverage/
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
+
+# Documentation files (may contain secrets)
+*.md
+*.ps1
+*.txt
