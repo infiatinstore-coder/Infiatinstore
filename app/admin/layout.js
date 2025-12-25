@@ -18,7 +18,9 @@ import {
     LogOut,
     Mail,
     MessageSquare,
-    FileText
+    FileText,
+    Folders,
+    Zap
 } from 'lucide-react';
 import useUserStore from '@/store/user';
 
@@ -26,6 +28,8 @@ const navItems = [
     { href: '/admin', icon: LayoutDashboard, label: 'Dashboard' },
     { href: '/admin/orders', icon: ShoppingBag, label: 'Pesanan' },
     { href: '/admin/products', icon: Package, label: 'Produk' },
+    { href: '/admin/categories', icon: Folders, label: 'Kategori' },
+    { href: '/admin/flash-sales', icon: Zap, label: 'Flash Sale' },
     { href: '/admin/customers', icon: Users, label: 'Pelanggan' },
     { href: '/admin/reports', icon: FileText, label: 'Laporan' },
     { href: '/admin/vouchers', icon: Tag, label: 'Voucher' },
