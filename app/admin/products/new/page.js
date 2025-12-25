@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { ArrowLeft, Upload, X, Plus, Trash2, Sparkles, Loader2 } from 'lucide-react';
 import { Button, Input } from '@/components/ui';
 import { categories } from '@/data/categories';
+import ImageUploader from '@/components/ImageUploader';
 
 export default function NewProductPage() {
     const router = useRouter();
@@ -23,7 +24,6 @@ export default function NewProductPage() {
         isFeatured: false,
         images: [],
         variants: [],
-        imageUrl: '',
     });
 
     const handleChange = (e) => {
@@ -59,20 +59,6 @@ export default function NewProductPage() {
         const newVariants = [...formData.variants];
         newVariants[index][field] = value;
         setFormData({ ...formData, variants: newVariants });
-    };
-
-    const handleAddImage = () => {
-        if (!formData.imageUrl) return;
-        setFormData({
-            ...formData,
-            images: [...formData.images, formData.imageUrl],
-            imageUrl: '',
-        });
-    };
-
-    const handleRemoveImage = (index) => {
-        const newImages = formData.images.filter((_, i) => i !== index);
-        setFormData({ ...formData, images: newImages });
     };
 
     // AI Generate Description Handler
@@ -362,44 +348,12 @@ export default function NewProductPage() {
 
                 {/* Images */}
                 <div className="bg-white rounded-xl shadow-sm p-6">
-                    <h2 className="text-lg font-semibold text-neutral-800 mb-4">Gambar Produk</h2>
-
-                    {/* Image Grid */}
-                    {formData.images.length > 0 && (
-                        <div className="grid grid-cols-3 gap-4 mb-4">
-                            {formData.images.map((img, idx) => (
-                                <div key={idx} className="relative aspect-square rounded-lg overflow-hidden bg-neutral-100 group">
-                                    <img src={img} alt={`Product ${idx + 1}`} className="w-full h-full object-cover" />
-                                    <button
-                                        type="button"
-                                        onClick={() => handleRemoveImage(idx)}
-                                        className="absolute top-2 right-2 p-1.5 bg-red-500 text-white rounded-lg opacity-0 group-hover:opacity-100 transition-opacity"
-                                    >
-                                        <X className="w-4 h-4" />
-                                    </button>
-                                </div>
-                            ))}
-                        </div>
-                    )}
-
-                    {/* Add Image URL */}
-                    <div className="flex gap-3">
-                        <input
-                            type="url"
-                            placeholder="Paste image URL (e.g., https://example.com/image.jpg)"
-                            value={formData.imageUrl}
-                            onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
-                            className="flex-1 px-4 py-3 rounded-xl border-2 border-neutral-200 focus:outline-none focus:border-primary-500"
-                        />
-                        <button
-                            type="button"
-                            onClick={handleAddImage}
-                            className="px-6 py-3 bg-primary-500 text-white rounded-xl hover:bg-primary-600"
-                        >
-                            Tambah
-                        </button>
-                    </div>
-                    <p className="text-sm text-neutral-500 mt-2">* Gunakan URL gambar dari Unsplash, Imgur, atau hosting lainnya</p>
+                    <ImageUploader
+                        images={formData.images}
+                        onImagesChange={(newImages) => setFormData({ ...formData, images: newImages })}
+                        maxImages={5}
+                        label="Gambar Produk"
+                    />
                 </div>
 
                 {/* Submit */}

@@ -1,5 +1,7 @@
 import './globals.css';
 import { PWAInstaller } from '@/components/PWAInstaller';
+import PWAInstallPrompt from '@/components/PWAInstallPrompt';
+import PWAUpdateNotification from '@/components/PWAUpdateNotification';
 import { BottomNav } from '@/components/layout';
 
 export const metadata = {
@@ -42,6 +44,8 @@ export default function RootLayout({ children }) {
             </head>
             <body className="min-h-screen flex flex-col" suppressHydrationWarning>
                 <PWAInstaller />
+                <PWAInstallPrompt />
+                <PWAUpdateNotification />
                 {children}
                 <BottomNav />
             </body>

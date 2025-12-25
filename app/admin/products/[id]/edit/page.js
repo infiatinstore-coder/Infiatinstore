@@ -6,6 +6,7 @@ import { useRouter, useParams } from 'next/navigation';
 import { ArrowLeft, Upload, X, Plus, Trash2, RefreshCw, Sparkles, Loader2 } from 'lucide-react';
 import { Button, Input } from '@/components/ui';
 import { categories } from '@/data/categories';
+import ImageUploader from '@/components/ImageUploader';
 
 export default function EditProductPage() {
     const router = useRouter();

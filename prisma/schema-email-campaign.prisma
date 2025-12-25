@@ -1,0 +1,39 @@
+// Add these models to your schema.prisma for Email Campaign
+
+model EmailCampaign {
+  id              String         @id @default(uuid())
+  subject         String
+  content         String         @db.Text
+  target          String         // all, customers, non-buyers, repeat-customers
+  recipientCount  Int            @map("recipient_count")
+  sentCount       Int            @default(0) @map("sent_count")
+  failedCount     Int            @default(0) @map("failed_count")
+  status          CampaignStatus @default(DRAFT)
+  productId       String?        @map("product_id")
+  voucherCode     String?        @map("voucher_code")
+  sentBy          String         @map("sent_by")
+  sentAt          DateTime?      @map("sent_at")
+  createdAt       DateTime       @default(now()) @map("created_at")
+
+  // Relations
+  sentByUser User @relation(fields: [sentBy], references: [id])
+
+  @@map("email_campaigns")
+}
+
+enum CampaignStatus {
+  DRAFT
+  SENDING
+  COMPLETED
+  FAILED
+}
+
+// Also add to User model:
+// emailCampaigns EmailCampaign[]
+
+// Also add to AffiliateReferral model for relation:
+// In User model add:
+// affiliateReferrals AffiliateReferral[] @relation("ReferredUser")
+
+// And update Order model to include:
+// affiliateCommissions AffiliateCommission[]
