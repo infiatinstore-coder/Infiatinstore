@@ -1,5 +1,7 @@
 'use client';
 
+import logger from '@/lib/logger';
+
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ArrowRight, Star, ShieldCheck, Truck, RotateCcw, CheckCircle2, RefreshCw } from 'lucide-react';
@@ -104,7 +106,7 @@ export default function HomePage() {
 
                 // If no featured products, fetch regular products
                 if (!featuredData.products || featuredData.products.length === 0) {
-                    console.log('No featured products, fetching all products');
+                    logger.dev('No featured products, fetching all products');
                     const fallbackRes = await fetch('/api/products?limit=12');
                     const fallbackData = await fallbackRes.json();
                     setFeaturedProducts(fallbackData.products || []);
