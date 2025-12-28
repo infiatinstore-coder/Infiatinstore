@@ -29,11 +29,11 @@ export async function POST(request) {
 
         let user;
         if (isPhone) {
-            user = await prisma.user.findFirst({
+            user = await prisma.users.findFirst({
                 where: { phone: email },
             });
         } else {
-            user = await prisma.user.findUnique({
+            user = await prisma.users.findUnique({
                 where: { email },
             });
         }
@@ -67,7 +67,7 @@ export async function POST(request) {
         }
 
         // Verify password
-        const isPasswordValid = await bcrypt.compare(password, user.passwordHash);
+        const isPasswordValid = await bcrypt.compare(password, user.password_hash);
 
         if (!isPasswordValid) {
             return NextResponse.json(
@@ -86,7 +86,7 @@ export async function POST(request) {
             email: user.email,
             phone: user.phone,
             role: user.role,
-            avatarUrl: user.avatarUrl,
+            avatarUrl: user.avatar_url,
         };
 
         // Create response with cookie
