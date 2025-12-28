@@ -34,7 +34,7 @@ export const GET = requireAuth(async function GET(request, context) {
                 user: { select: { name: true, email: true } },
                 items: { include: { product: { select: { name: true } } } }
             },
-            orderBy: { createdAt: 'desc' }
+            orderBy: { created_at: 'desc' }
         });
 
         const data = orders.map(o => ({
@@ -47,7 +47,7 @@ export const GET = requireAuth(async function GET(request, context) {
             shipping: Number(o.shippingCost),
             total: Number(o.total),
             status: o.status,
-            paymentMethod: o.paymentMethod
+            payment_method: o.paymentMethod
         }));
 
         const workbook = await createExcelFromJSON(data, 'Sales Report');

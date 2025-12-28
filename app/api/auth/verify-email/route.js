@@ -21,7 +21,7 @@ export async function POST(request) {
         // Find user with this token
         const user = await prisma.users.findFirst({
             where: {
-                verificationToken: token,
+                verification_token: token,
                 verificationTokenExpires: { gt: new Date() }
             }
         });
@@ -38,7 +38,7 @@ export async function POST(request) {
             where: { id: user.id },
             data: {
                 status: 'UNVERIFIED', // Email verified, but profile not complete
-                emailVerifiedAt: new Date(),
+                email_verified_at: new Date(),
                 // Keep token for complete-profile verification
             }
         });
@@ -46,7 +46,7 @@ export async function POST(request) {
         return NextResponse.json({
             success: true,
             message: 'Email berhasil diverifikasi',
-            userId: user.id,
+            user_id: user.id,
         });
 
     } catch (error) {

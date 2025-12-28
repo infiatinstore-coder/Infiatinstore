@@ -49,8 +49,8 @@ export async function POST(request) {
                     phone: true,
                     role: true,
                     status: true,
-                    avatarUrl: true,
-                    passwordHash: true,
+                    avatar_url: true,
+                    password_hash: true,
                 },
             });
 
@@ -67,7 +67,7 @@ export async function POST(request) {
                         success: true,
                         message: 'OTP terverifikasi',
                         needCompleteProfile: true,
-                        userId: user.id,
+                        user_id: user.id,
                     });
                 }
 

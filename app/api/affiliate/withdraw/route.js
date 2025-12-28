@@ -21,7 +21,7 @@ export const POST = requireAuth(async function POST(request, context) {
 
         // Get affiliate info
         const affiliate = await prisma.affiliates.findUnique({
-            where: { userId: context.user.id }
+            where: { user_id: context.user.id }
         });
 
         if (!affiliate) {
@@ -59,9 +59,9 @@ export const POST = requireAuth(async function POST(request, context) {
         // Create withdrawal request
         const withdrawal = await prisma.affiliate_withdrawals.create({
             data: {
-                affiliateId: affiliate.id,
+                affiliate_id: affiliate.id,
                 amount: withdrawAmount,
-                bankAccount: bankAccount || affiliate.bankAccount,
+                bank_account: bankAccount || affiliate.bankAccount,
                 status: 'PENDING'
             }
         });
@@ -70,7 +70,7 @@ export const POST = requireAuth(async function POST(request, context) {
         await prisma.affiliates.update({
             where: { id: affiliate.id },
             data: {
-                availableBalance: {
+                available_balance: {
                     decrement: withdrawAmount
                 }
             }
@@ -82,7 +82,7 @@ export const POST = requireAuth(async function POST(request, context) {
                 id: withdrawal.id,
                 amount: parseFloat(withdrawal.amount),
                 status: withdrawal.status,
-                createdAt: withdrawal.createdAt
+                created_at: withdrawal.createdAt
             }
         });
 
@@ -102,7 +102,7 @@ export const POST = requireAuth(async function POST(request, context) {
 export const GET = requireAuth(async function GET(request, context) {
     try {
         const affiliate = await prisma.affiliates.findUnique({
-            where: { userId: context.user.id }
+            where: { user_id: context.user.id }
         });
 
         if (!affiliate) {
@@ -113,8 +113,8 @@ export const GET = requireAuth(async function GET(request, context) {
         }
 
         const withdrawals = await prisma.affiliate_withdrawals.findMany({
-            where: { affiliateId: affiliate.id },
-            orderBy: { createdAt: 'desc' },
+            where: { affiliate_id: affiliate.id },
+            orderBy: { created_at: 'desc' },
             take: 50
         });
 
@@ -123,10 +123,10 @@ export const GET = requireAuth(async function GET(request, context) {
                 id: w.id,
                 amount: parseFloat(w.amount),
                 status: w.status,
-                bankAccount: w.bankAccount,
-                proofUrl: w.proofUrl,
-                processedAt: w.processedAt,
-                createdAt: w.createdAt
+                bank_account: w.bankAccount,
+                proof_url: w.proofUrl,
+                processed_at: w.processedAt,
+                created_at: w.createdAt
             }))
         });
 

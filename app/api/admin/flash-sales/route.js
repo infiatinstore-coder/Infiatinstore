@@ -17,7 +17,7 @@ export async function GET(request) {
         }
 
         const flashSales = await prisma.flash_sales.findMany({
-            orderBy: { startTime: 'desc' },
+            orderBy: { start_time: 'desc' },
             include: {
                 products: {
                     include: {
@@ -35,8 +35,8 @@ export async function GET(request) {
                 name: fs.name,
                 slug: fs.slug,
                 bannerUrl: fs.bannerUrl,
-                startTime: fs.startTime,
-                endTime: fs.endTime,
+                start_time: fs.startTime,
+                end_time: fs.endTime,
                 status: fs.status,
                 productCount: fs.products.length,
                 totalSold: fs.products.reduce((sum, p) => sum + p.soldCount, 0),
@@ -82,14 +82,14 @@ export async function POST(request) {
                 slug: slugify(name) + '-' + Date.now(),
                 description,
                 bannerUrl,
-                startTime: start,
-                endTime: end,
+                start_time: start,
+                end_time: end,
                 status,
                 products: products?.length > 0 ? {
                     create: products.map(p => ({
-                        productId: p.productId,
-                        salePrice: p.salePrice,
-                        stockLimit: p.stockLimit,
+                        product_id: p.productId,
+                        sale_price: p.salePrice,
+                        stock_limit: p.stockLimit,
                     })),
                 } : undefined,
             },

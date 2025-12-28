@@ -113,14 +113,22 @@ export default function FlashSaleSection() {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const res = await fetch('/api/products?limit=6');
+                const res = await fetch('/api/products?limit=6&featured=true');
                 const data = await res.json();
-                // Add soldCount for display
-                const productsWithSales = (data.products || []).map((p, i) => ({
-                    ...p,
-                    soldCount: 65 + (i * 5),
-                    salePrice: p.salePrice || Math.round(Number(p.basePrice) * 0.8)
-                }));
+                // Calculate sold percentage dynamically based on stock (simulate flash sale pressure)
+                const productsWithSales = (data.products || []).map((p) => {
+                    const totalStock = p.stock + 100; // Simulate original stock
+                    const currentStock = p.stock;
+                    const soldCount = totalStock - currentStock;
+                    const soldPercent = Math.round((soldCount / totalStock) * 100);
+
+                    return {
+                        ...p,
+                        soldCount,
+                        soldPercent,
+                        salePrice: p.sale_price || p.salePrice || Math.round(Number(p.base_price || p.basePrice) * 0.8)
+                    };
+                });
                 setProducts(productsWithSales);
             } catch (error) {
                 console.error('Error fetching flash sale products:', error);

@@ -57,7 +57,7 @@ export async function GET(request) {
                 totalDPP: report._sum?.taxable_amount || 0,
                 totalTaxExempt: report._sum?.tax_exempt_amount || 0,
                 totalPPN: report._sum?.total_tax || 0,
-                totalAmount: report._sum?.total_amount || 0
+                total_amount: report._sum?.total_amount || 0
             }
         });
 

@@ -50,8 +50,8 @@ export const GET = requireAuth(async function GET(request, context) {
                 name: true,
                 slug: true,
                 images: true,
-                basePrice: true,
-                salePrice: true,
+                base_price: true,
+                sale_price: true,
                 stock: true,
             },
         });
@@ -60,7 +60,7 @@ export const GET = requireAuth(async function GET(request, context) {
         const bestSellersWithDetails = bestSellers.map(item => {
             const product = products.find(p => p.id === item.productId);
             return {
-                productId: item.productId,
+                product_id: item.productId,
                 name: product?.name || 'Unknown Product',
                 slug: product?.slug,
                 image: product?.images?.[0] || null,

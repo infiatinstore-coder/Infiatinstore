@@ -42,8 +42,8 @@ export async function POST(request) {
                 user = await prisma.users.update({
                     where: { email },
                     data: {
-                        avatarUrl: picture?.data?.url || null,
-                        emailVerifiedAt: new Date(),
+                        avatar_url: picture?.data?.url || null,
+                        email_verified_at: new Date(),
                         status: 'ACTIVE'
                     }
                 });
@@ -60,9 +60,9 @@ export async function POST(request) {
                 data: {
                     email,
                     name,
-                    passwordHash: randomPassword,
-                    avatarUrl: picture?.data?.url || null,
-                    emailVerifiedAt: new Date(),
+                    password_hash: randomPassword,
+                    avatar_url: picture?.data?.url || null,
+                    email_verified_at: new Date(),
                     status: 'ACTIVE',
                     role: 'CUSTOMER'
                 }
@@ -71,7 +71,7 @@ export async function POST(request) {
             // Create user points record
             await prisma.user_points.create({
                 data: {
-                    userId: user.id,
+                    user_id: user.id,
                     balance: 100, // Welcome bonus
                     lifetime: 100
                 }
@@ -80,7 +80,7 @@ export async function POST(request) {
             // Log registration
             await prisma.point_transactions.create({
                 data: {
-                    userId: user.id,
+                    user_id: user.id,
                     type: 'EARN_REFERRAL',
                     amount: 100,
                     balance: 100,
@@ -104,7 +104,7 @@ export async function POST(request) {
                 email: user.email,
                 name: user.name,
                 role: user.role,
-                avatarUrl: user.avatarUrl
+                avatar_url: user.avatarUrl
             },
             message: 'Login successful'
         });

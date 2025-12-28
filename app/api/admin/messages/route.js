@@ -34,7 +34,7 @@ export async function GET(request) {
         const [messages, total] = await Promise.all([
             prisma.contact_messages.findMany({
                 where,
-                orderBy: { createdAt: 'desc' },
+                orderBy: { created_at: 'desc' },
                 skip: (page - 1) * limit,
                 take: limit,
             }),

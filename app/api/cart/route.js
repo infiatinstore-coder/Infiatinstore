@@ -10,7 +10,7 @@ import { verifyAuth, assertUserCanTransact } from '@/lib/auth';
 async function getAuthUser(request) {
     const auth = await verifyAuth(request);
     if (!auth.success) return null;
-    return { userId: auth.user.id, ...auth.user };
+    return { user_id: auth.user.id, ...auth.user };
 }
 
 // GET /api/cart - Get user's cart
@@ -22,15 +22,15 @@ export async function GET(request) {
         }
 
         const cartItems = await prisma.carts.findMany({
-            where: { userId: user.userId },
+            where: { user_id: user.userId },
             include: {
                 product: {
                     select: {
                         id: true,
                         name: true,
                         slug: true,
-                        basePrice: true,
-                        salePrice: true,
+                        base_price: true,
+                        sale_price: true,
                         stock: true,
                         images: true,
                         status: true,
@@ -95,7 +95,7 @@ export async function POST(request) {
         // Upsert cart item
         const existingItem = await prisma.carts.findFirst({
             where: {
-                userId: user.userId,
+                user_id: user.userId,
                 productId,
                 variantId: variantId || null,
             },
@@ -114,7 +114,7 @@ export async function POST(request) {
         } else {
             cartItem = await prisma.carts.create({
                 data: {
-                    userId: user.userId,
+                    user_id: user.userId,
                     productId,
                     variantId: variantId || null,
                     quantity,
@@ -154,7 +154,7 @@ export async function PUT(request) {
         }
 
         const cartItem = await prisma.carts.findFirst({
-            where: { id: cartItemId, userId: user.userId },
+            where: { id: cartItemId, user_id: user.userId },
             include: { product: true, variant: true },
         });
 
@@ -199,13 +199,13 @@ export async function DELETE(request) {
         if (!cartItemId) {
             // Clear all cart
             await prisma.carts.deleteMany({
-                where: { userId: user.userId },
+                where: { user_id: user.userId },
             });
             return NextResponse.json({ message: 'Keranjang dikosongkan' });
         }
 
         await prisma.carts.deleteMany({
-            where: { id: cartItemId, userId: user.userId },
+            where: { id: cartItemId, user_id: user.userId },
         });
 
         return NextResponse.json({ message: 'Item dihapus dari keranjang' });

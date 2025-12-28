@@ -20,7 +20,7 @@ export async function POST(request) {
         const notification = await request.json();
 
         logger.info('Payment webhook received', {
-            orderId: notification.order_id,
+            order_id: notification.order_id,
             transactionId: notification.transaction_id,
             status: notification.transaction_status,
             paymentType: notification.payment_type
@@ -66,7 +66,7 @@ export async function POST(request) {
         }
 
         logger.info('Webhook processed successfully', {
-            orderId: notification.order_id,
+            order_id: notification.order_id,
             newStatus: result.orderStatus,
             duplicate: false
         });

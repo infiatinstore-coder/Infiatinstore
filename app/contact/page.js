@@ -75,9 +75,9 @@ export default function ContactPage() {
                                 </div>
                                 <h3 className="font-semibold text-neutral-800 mb-2">Alamat</h3>
                                 <p className="text-neutral-600 text-sm">
-                                    Jl. Sudirman No. 123<br />
-                                    Jakarta Pusat 10110<br />
-                                    Indonesia
+                                    GQ7C+793, Cikomprang, Desa Tegalsari<br />
+                                    Sidareja, Cilacap<br />
+                                    Jawa Tengah 53261
                                 </p>
                             </div>
 
@@ -85,9 +85,9 @@ export default function ContactPage() {
                                 <div className="w-12 h-12 bg-primary-100 rounded-xl flex items-center justify-center mb-4">
                                     <Phone className="w-6 h-6 text-primary-500" />
                                 </div>
-                                <h3 className="font-semibold text-neutral-800 mb-2">Telepon</h3>
-                                <p className="text-neutral-600 text-sm mb-1">+62 21 1234 5678</p>
-                                <p className="text-neutral-600 text-sm">Senin - Jumat: 09:00 - 18:00</p>
+                                <h3 className="font-semibold text-neutral-800 mb-2">WhatsApp</h3>
+                                <p className="text-neutral-600 text-sm mb-1">0851-1945-7138</p>
+                                <p className="text-neutral-600 text-sm">Buka Setiap Hari: 06.30 – 21.00 WIB</p>
                             </div>
 
                             <div className="bg-white rounded-xl shadow-sm p-6">

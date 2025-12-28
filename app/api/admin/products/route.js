@@ -46,7 +46,7 @@ export async function GET(request) {
         const [products, total] = await Promise.all([
             prisma.products.findMany({
                 where,
-                orderBy: { createdAt: 'desc' },
+                orderBy: { created_at: 'desc' },
                 skip: (page - 1) * limit,
                 take: limit,
                 include: {
@@ -68,18 +68,18 @@ export async function GET(request) {
             name: product.name,
             slug: product.slug,
             category: product.category?.name || '-',
-            categoryId: product.categoryId,
-            basePrice: Number(product.basePrice),
-            salePrice: product.salePrice ? Number(product.salePrice) : null,
+            category_id: product.categoryId,
+            base_price: Number(product.basePrice),
+            sale_price: product.salePrice ? Number(product.salePrice) : null,
             stock: product.stock,
             variantsCount: product.variants.length,
             totalVariantStock: product.variants.reduce((sum, v) => sum + v.stock, 0),
             images: product.images,
             status: product.status,
-            isFeatured: product.isFeatured,
+            is_featured: product.isFeatured,
             reviewCount: product._count.reviews,
-            soldCount: product._count.orderItems,
-            createdAt: product.createdAt,
+            sold_count: product._count.orderItems,
+            created_at: product.createdAt,
         }));
 
         return NextResponse.json({
@@ -153,13 +153,13 @@ export async function POST(request) {
                 description,
                 categoryId,
                 basePrice,
-                salePrice: salePrice || null,
+                sale_price: salePrice || null,
                 stock: stock || 0,
                 weight: weight || 0,
                 dimensions: dimensions || null,
                 images: images || [],
                 status: status || 'ACTIVE',
-                isFeatured: isFeatured || false,
+                is_featured: isFeatured || false,
                 variants: variants?.length > 0 ? {
                     create: variants.map(v => ({
                         name: v.name,

@@ -19,10 +19,10 @@ export async function GET(request) {
         const where = {
             isActive: true,
             OR: [
-                { validFrom: null, validUntil: null },
+                { valid_from: null, valid_until: null },
                 {
-                    validFrom: { lte: now },
-                    validUntil: { gte: now },
+                    valid_from: { lte: now },
+                    valid_until: { gte: now },
                 },
             ],
         };
@@ -47,8 +47,8 @@ export async function GET(request) {
                                 name: true,
                                 slug: true,
                                 images: true,
-                                basePrice: true,
-                                salePrice: true,
+                                base_price: true,
+                                sale_price: true,
                                 stock: true,
                             },
                         },
@@ -56,7 +56,7 @@ export async function GET(request) {
                 },
             },
             orderBy: {
-                createdAt: 'desc',
+                created_at: 'desc',
             },
             take: limit,
         });
@@ -90,12 +90,12 @@ export async function GET(request) {
                 name: bundle.name,
                 slug: bundle.slug,
                 description: bundle.description,
-                imageUrl: bundle.imageUrl,
+                image_url: bundle.imageUrl,
                 minQuantity: bundle.minQuantity,
                 discountType: bundle.discountType,
                 discountValue: Number(bundle.discountValue),
-                validFrom: bundle.validFrom,
-                validUntil: bundle.validUntil,
+                valid_from: bundle.validFrom,
+                valid_until: bundle.validUntil,
                 products: bundle.products.map((bp) => ({
                     ...bp.product,
                     quantity: bp.quantity,

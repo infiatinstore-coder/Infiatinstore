@@ -64,7 +64,7 @@ export async function POST(request) {
         // Get current user with password
         const user = await prisma.users.findUnique({
             where: { id: auth.user.id },
-            select: { id: true, email: true, passwordHash: true }
+            select: { id: true, email: true, password_hash: true }
         });
 
         if (!user) {
@@ -89,7 +89,7 @@ export async function POST(request) {
         // Update password
         await prisma.users.update({
             where: { id: user.id },
-            data: { passwordHash: newPasswordHash }
+            data: { password_hash: newPasswordHash }
         });
 
         console.log('✅ Password changed for user:', user.email);

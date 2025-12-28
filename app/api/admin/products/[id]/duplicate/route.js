@@ -32,14 +32,14 @@ export async function POST(request, { params }) {
                 name: `${original.name} (Copy)`,
                 slug: `${original.slug}-copy-${Date.now()}`,
                 description: original.description,
-                basePrice: original.basePrice,
-                salePrice: original.salePrice,
+                base_price: original.basePrice,
+                sale_price: original.salePrice,
                 stock: original.stock,
                 category: original.category,
                 images: original.images,
                 weight: original.weight,
                 status: 'INACTIVE', // Set to inactive by default
-                isFeatured: false,
+                is_featured: false,
                 isNew: false,
                 tags: original.tags,
                 variants: {

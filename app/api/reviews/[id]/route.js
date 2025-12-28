@@ -18,7 +18,7 @@ export async function PUT(request, { params }) {
         const review = await prisma.reviews.findFirst({
             where: {
                 id: reviewId,
-                userId: auth.user.id,
+                user_id: auth.user.id,
             },
         });
 
@@ -77,7 +77,7 @@ export async function DELETE(request, { params }) {
         const review = await prisma.reviews.findFirst({
             where: {
                 id: reviewId,
-                userId: auth.user.id,
+                user_id: auth.user.id,
             },
         });
 

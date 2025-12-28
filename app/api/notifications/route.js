@@ -51,7 +51,7 @@ export async function POST(request) {
         const data = await request.json();
 
         const notification = await notificationService.createNotification({
-            userId: data.userId || auth.user.id,
+            user_id: data.userId || auth.user.id,
             ...data
         });
 

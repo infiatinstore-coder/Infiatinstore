@@ -22,7 +22,7 @@ async function getAuthUser(request) {
     if (!auth.success) {
         return null;
     }
-    return { userId: auth.user.id, role: auth.user.role, email: auth.user.email };
+    return { user_id: auth.user.id, role: auth.user.role, email: auth.user.email };
 }
 
 // GET /api/orders - Get user's orders
@@ -38,13 +38,13 @@ export async function GET(request) {
         const limit = parseInt(searchParams.get('limit')) || 10;
         const status = searchParams.get('status');
 
-        const where = { userId: user.userId };
+        const where = { user_id: user.userId };
         if (status) where.status = status;
 
         const [orders, total] = await Promise.all([
             prisma.orders.findMany({
                 where,
-                orderBy: { createdAt: 'desc' },
+                orderBy: { created_at: 'desc' },
                 skip: (page - 1) * limit,
                 take: limit,
                 include: {
@@ -138,7 +138,7 @@ export async function POST(request) {
         if (idempotencyKey) {
             const where = {
                 idempotencyKey,
-                createdAt: { gte: new Date(Date.now() - 24 * 60 * 60 * 1000) } // Last 24 hours
+                created_at: { gte: new Date(Date.now() - 24 * 60 * 60 * 1000) } // Last 24 hours
             };
 
             // Add userId filter only if user is authenticated
@@ -177,7 +177,7 @@ export async function POST(request) {
             if (addressId) {
                 // Using saved address from database
                 address = await prisma.addresses.findFirst({
-                    where: { id: addressId, userId: user.userId },
+                    where: { id: addressId, user_id: user.userId },
                 });
                 if (!address) {
                     return NextResponse.json({ error: 'Alamat tidak valid' }, { status: 400 });
@@ -192,12 +192,12 @@ export async function POST(request) {
                 // Create a pseudo-address object for authenticated user with manual entry
                 address = {
                     id: null, // No database address
-                    recipientName: shippingAddress.recipientName,
+                    recipient_name: shippingAddress.recipientName,
                     phone: shippingAddress.phone,
                     address: shippingAddress.address,
                     city: shippingAddress.city,
                     province: shippingAddress.province || '',
-                    postalCode: shippingAddress.postalCode || '',
+                    postal_code: shippingAddress.postalCode || '',
                     label: 'MANUAL'
                 };
             } else {
@@ -213,12 +213,12 @@ export async function POST(request) {
             // Create a pseudo-address object for guest
             address = {
                 id: null, // No database address for guest
-                recipientName: guestName,
+                recipient_name: guestName,
                 phone: guestPhone,
                 address: guestAddress.address,
                 city: guestAddress.city,
                 province: guestAddress.province || '',
-                postalCode: guestAddress.postalCode || '',
+                postal_code: guestAddress.postalCode || '',
                 label: 'GUEST'
             };
         }
@@ -239,8 +239,8 @@ export async function POST(request) {
                         where: {
                             flashSale: {
                                 status: 'ACTIVE',
-                                startTime: { lte: now },
-                                endTime: { gte: now }
+                                start_time: { lte: now },
+                                end_time: { gte: now }
                             }
                         }
                     }
@@ -270,9 +270,9 @@ export async function POST(request) {
                 // Mark for atomic reservation (will check quota inside transaction)
                 flashSaleReservations.push({
                     flashSaleProductId: fsItem.id,
-                    productId: product.id,
+                    product_id: product.id,
                     quantity: item.quantity,
-                    salePrice: fsItem.salePrice
+                    sale_price: fsItem.salePrice
                 });
 
                 price = fsItem.salePrice;
@@ -283,7 +283,7 @@ export async function POST(request) {
             subtotal += itemSubtotal;
 
             orderItems.push({
-                productId: product.id,
+                product_id: product.id,
                 variantId: variant?.id || null,
                 productName: product.name,
                 variantName: variant?.name || null,
@@ -327,8 +327,8 @@ export async function POST(request) {
             // Prepare order data (different for authenticated vs guest)
             const orderData = {
                 orderNumber: generateOrderNumber(),
-                userId: user ? user.userId : null, // NULL for guest checkout
-                addressId: address.id, // Will be null for guests
+                user_id: user ? user.userId : null, // NULL for guest checkout
+                address_id: address.id, // Will be null for guests
                 subtotal,
                 shippingCost,
                 discount,
@@ -364,7 +364,7 @@ export async function POST(request) {
             // Create payment record with INIT status
             await tx.payment.create({
                 data: {
-                    orderId: newOrder.id,
+                    order_id: newOrder.id,
                     paymentMethod,
                     amount: total,
                     status: 'INIT', // Initial payment status
@@ -375,7 +375,7 @@ export async function POST(request) {
             // Create shipment record
             await tx.shipment.create({
                 data: {
-                    orderId: newOrder.id,
+                    order_id: newOrder.id,
                     courier: shippingMethod,
                     serviceType: courierService,
                     status: 'PENDING',
@@ -392,7 +392,7 @@ export async function POST(request) {
             for (const fsReserve of flashSaleReservations) {
                 await tx.flashSaleProduct.update({
                     where: { id: fsReserve.flashSaleProductId },
-                    data: { soldCount: { increment: fsReserve.quantity } }
+                    data: { sold_count: { increment: fsReserve.quantity } }
                 });
             }
 
@@ -400,7 +400,7 @@ export async function POST(request) {
             if (voucherCode && discount > 0) {
                 await tx.voucher.update({
                     where: { code: voucherCode },
-                    data: { usedCount: { increment: 1 } },
+                    data: { used_count: { increment: 1 } },
                 });
             }
 

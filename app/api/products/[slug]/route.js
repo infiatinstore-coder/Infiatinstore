@@ -19,10 +19,10 @@ export async function GET(request, { params }) {
                     where: { status: 'APPROVED' },
                     include: {
                         user: {
-                            select: { id: true, name: true, avatarUrl: true },
+                            select: { id: true, name: true, avatar_url: true },
                         },
                     },
-                    orderBy: { createdAt: 'desc' },
+                    orderBy: { created_at: 'desc' },
                     take: 10,
                 },
             },
@@ -37,7 +37,7 @@ export async function GET(request, { params }) {
 
         // Get average rating
         const avgRating = await prisma.reviews.aggregate({
-            where: { productId: product.id, status: 'APPROVED' },
+            where: { product_id: product.id, status: 'APPROVED' },
             _avg: { rating: true },
             _count: { rating: true },
         });
@@ -45,7 +45,7 @@ export async function GET(request, { params }) {
         // Get related products
         const relatedProducts = await prisma.products.findMany({
             where: {
-                categoryId: product.categoryId,
+                category_id: product.categoryId,
                 id: { not: product.id },
                 status: 'ACTIVE',
             },

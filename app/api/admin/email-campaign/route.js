@@ -53,7 +53,7 @@ export const POST = requireAuth(async function POST(request, context) {
                 // All customers with verified email
                 const customers = await prisma.users.findMany({
                     where: {
-                        emailVerifiedAt: { not: null },
+                        email_verified_at: { not: null },
                         status: 'ACTIVE'
                     },
                     select: { email: true, name: true }
@@ -65,7 +65,7 @@ export const POST = requireAuth(async function POST(request, context) {
                 // Users who never made a purchase
                 const nonBuyers = await prisma.users.findMany({
                     where: {
-                        emailVerifiedAt: { not: null },
+                        email_verified_at: { not: null },
                         status: 'ACTIVE',
                         orders: { none: {} }
                     },
@@ -78,7 +78,7 @@ export const POST = requireAuth(async function POST(request, context) {
                 // Users with more than 1 order
                 const repeatCustomers = await prisma.users.findMany({
                     where: {
-                        emailVerifiedAt: { not: null },
+                        email_verified_at: { not: null },
                         status: 'ACTIVE'
                     },
                     select: {
@@ -212,7 +212,7 @@ async function sendEmailsInBackground(campaignId, recipients, subject, content, 
             status: 'COMPLETED',
             sentCount: successCount,
             failedCount: failCount,
-            sentAt: new Date()
+            sent_at: new Date()
         }
     });
 
@@ -234,7 +234,7 @@ export const GET = requireAuth(async function GET(request, context) {
         }
 
         const campaigns = await prisma.email_campaigns.findMany({
-            orderBy: { createdAt: 'desc' },
+            orderBy: { created_at: 'desc' },
             take: 50,
             include: {
                 sentByUser: {
@@ -253,8 +253,8 @@ export const GET = requireAuth(async function GET(request, context) {
                 failedCount: c.failedCount,
                 status: c.status,
                 sentBy: c.sentByUser,
-                createdAt: c.createdAt,
-                sentAt: c.sentAt
+                created_at: c.createdAt,
+                sent_at: c.sentAt
             }))
         });
 

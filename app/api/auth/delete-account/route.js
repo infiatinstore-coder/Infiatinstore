@@ -93,28 +93,28 @@ export async function DELETE(request) {
                 email: `deleted_${user.id}_${randomSuffix}@deleted.local`,
                 name: '[Deleted User]',
                 phone: null,
-                avatarUrl: null,
+                avatar_url: null,
                 status: 'SUSPENDED',
-                passwordHash: crypto.randomBytes(32).toString('hex'), // Invalidate password
+                password_hash: crypto.randomBytes(32).toString('hex'), // Invalidate password
                 // Clear sensitive tokens
-                verificationToken: null,
+                verification_token: null,
                 verificationTokenExpires: null,
-                resetPasswordToken: null,
+                reset_password_token: null,
                 resetPasswordExpires: null
             }
         });
 
         // Optionally: Delete personal data from other tables
         await prisma.addresses.deleteMany({
-            where: { userId: user.id }
+            where: { user_id: user.id }
         });
 
         await prisma.carts.deleteMany({
-            where: { userId: user.id }
+            where: { user_id: user.id }
         });
 
         await prisma.wishlists.deleteMany({
-            where: { userId: user.id }
+            where: { user_id: user.id }
         });
 
         console.log('✅ Account deleted (soft) for user:', user.email);

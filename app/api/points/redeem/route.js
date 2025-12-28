@@ -9,8 +9,8 @@ const REDEEM_OPTIONS = [
     { id: 1, name: 'Diskon Rp 10.000', coins: 100, value: 10000, type: 'FIXED' },
     { id: 2, name: 'Diskon Rp 25.000', coins: 200, value: 25000, type: 'FIXED' },
     { id: 3, name: 'Diskon Rp 50.000', coins: 400, value: 50000, type: 'FIXED' },
-    { id: 4, name: 'Diskon 10%', coins: 150, value: 10, type: 'PERCENTAGE', maxDiscount: 50000 },
-    { id: 5, name: 'Gratis Ongkir', coins: 100, value: 0, type: 'FREE_SHIPPING', maxDiscount: 30000 },
+    { id: 4, name: 'Diskon 10%', coins: 150, value: 10, type: 'PERCENTAGE', max_discount: 50000 },
+    { id: 5, name: 'Gratis Ongkir', coins: 100, value: 0, type: 'FREE_SHIPPING', max_discount: 30000 },
 ];
 
 /**
@@ -67,12 +67,12 @@ export const POST = requireAuth(async function POST(request, context) {
                     name: option.name,
                     type: option.type,
                     value: option.value,
-                    minPurchase: 0,
-                    maxDiscount: option.maxDiscount || option.value,
-                    usageLimit: 1,
-                    usedCount: 0,
-                    validFrom: new Date(),
-                    validUntil: validUntil,
+                    min_purchase: 0,
+                    max_discount: option.maxDiscount || option.value,
+                    usage_limit: 1,
+                    used_count: 0,
+                    valid_from: new Date(),
+                    valid_until: validUntil,
                     isActive: true,
                     // Link to specific user
                     // Note: If your schema supports user-specific vouchers, add userId here
@@ -98,7 +98,7 @@ export const POST = requireAuth(async function POST(request, context) {
             voucher: {
                 code: result.code,
                 name: result.name,
-                validUntil: result.validUntil,
+                valid_until: result.validUntil,
             },
             newBalance: currentBalance - option.coins
         });

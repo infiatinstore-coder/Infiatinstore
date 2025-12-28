@@ -13,7 +13,7 @@ export async function GET() {
     try {
         const categories = await prisma.categories.findMany({
             orderBy: {
-                createdAt: 'desc'
+                created_at: 'desc'
             },
             include: {
                 _count: {
@@ -79,7 +79,7 @@ export async function POST(request) {
                 name: name.trim(),
                 slug: slug.trim(),
                 description: description?.trim() || null,
-                imageUrl: imageUrl?.trim() || null,
+                image_url: imageUrl?.trim() || null,
                 parentId: parentId || null,
             }
         });

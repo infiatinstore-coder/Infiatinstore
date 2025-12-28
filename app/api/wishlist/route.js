@@ -26,7 +26,7 @@ export async function GET(request) {
         }
 
         const wishlist = await prisma.wishlists.findMany({
-            where: { userId: user.id },
+            where: { user_id: user.id },
             include: {
                 product: {
                     include: {
@@ -34,7 +34,7 @@ export async function GET(request) {
                     }
                 }
             },
-            orderBy: { createdAt: 'desc' }
+            orderBy: { created_at: 'desc' }
         });
 
         return NextResponse.json({
@@ -54,7 +54,7 @@ export async function GET(request) {
 /**
  * POST /api/wishlist
  * Add product to wishlist
- * Body: { productId: string }
+ * Body: { product_id: string }
  */
 export async function POST(request) {
     try {
@@ -92,8 +92,8 @@ export async function POST(request) {
         const existing = await prisma.wishlists.findUnique({
             where: {
                 userId_productId: {
-                    userId: user.id,
-                    productId: productId
+                    user_id: user.id,
+                    product_id: productId
                 }
             }
         });
@@ -108,8 +108,8 @@ export async function POST(request) {
         // Add to wishlist
         const wishlistItem = await prisma.wishlists.create({
             data: {
-                userId: user.id,
-                productId: productId
+                user_id: user.id,
+                product_id: productId
             },
             include: {
                 product: {
@@ -138,7 +138,7 @@ export async function POST(request) {
 /**
  * DELETE /api/wishlist
  * Remove product from wishlist
- * Body: { productId: string }
+ * Body: { product_id: string }
  */
 export async function DELETE(request) {
     try {
@@ -163,8 +163,8 @@ export async function DELETE(request) {
         // Delete from wishlist
         const deleted = await prisma.wishlists.deleteMany({
             where: {
-                userId: user.id,
-                productId: productId
+                user_id: user.id,
+                product_id: productId
             }
         });
 

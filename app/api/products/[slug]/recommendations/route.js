@@ -13,8 +13,8 @@ export async function GET(request, { params }) {
             where: { slug },
             select: {
                 id: true,
-                categoryId: true,
-                basePrice: true,
+                category_id: true,
+                base_price: true,
             },
         });
 
@@ -30,7 +30,7 @@ export async function GET(request, { params }) {
             // 1. Related products (same category)
             prisma.products.findMany({
                 where: {
-                    categoryId: product.categoryId,
+                    category_id: product.categoryId,
                     id: { not: product.id },
                     status: 'ACTIVE',
                 },
@@ -39,14 +39,14 @@ export async function GET(request, { params }) {
                     name: true,
                     slug: true,
                     images: true,
-                    basePrice: true,
-                    salePrice: true,
+                    base_price: true,
+                    sale_price: true,
                     _count: {
                         select: { reviews: true },
                     },
                 },
                 orderBy: {
-                    isFeatured: 'desc',
+                    is_featured: 'desc',
                 },
                 take: limit,
             }),
@@ -76,7 +76,7 @@ export async function GET(request, { params }) {
                     status: 'ACTIVE',
                     OR: [
                         {
-                            basePrice: {
+                            base_price: {
                                 gte: Number(product.basePrice) * 0.7,
                                 lte: Number(product.basePrice) * 1.3,
                             },
@@ -88,11 +88,11 @@ export async function GET(request, { params }) {
                     name: true,
                     slug: true,
                     images: true,
-                    basePrice: true,
-                    salePrice: true,
+                    base_price: true,
+                    sale_price: true,
                 },
                 orderBy: {
-                    createdAt: 'desc',
+                    created_at: 'desc',
                 },
                 take: limit,
             }),
@@ -104,8 +104,8 @@ export async function GET(request, { params }) {
             name: p.name,
             slug: p.slug,
             image: Array.isArray(p.images) ? p.images[0] : p.images,
-            basePrice: Number(p.base_price || p.basePrice),
-            salePrice: p.sale_price || p.salePrice ? Number(p.sale_price || p.salePrice) : null,
+            base_price: Number(p.base_price || p.basePrice),
+            sale_price: p.sale_price || p.salePrice ? Number(p.sale_price || p.salePrice) : null,
         });
 
         return NextResponse.json({

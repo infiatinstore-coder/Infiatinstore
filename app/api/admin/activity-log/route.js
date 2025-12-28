@@ -36,7 +36,7 @@ export async function GET(request) {
                         select: { name: true, email: true, role: true },
                     },
                 },
-                orderBy: { createdAt: 'desc' },
+                orderBy: { created_at: 'desc' },
                 skip: (page - 1) * limit,
                 take: limit,
             }),
@@ -78,13 +78,13 @@ export async function POST(request) {
 
         const log = await prisma.activity_logs.create({
             data: {
-                userId: auth.user.id,
+                user_id: auth.user.id,
                 action,
                 entity,
                 entityId,
                 details,
-                ipAddress: request.headers.get('x-forwarded-for') || 'unknown',
-                userAgent: request.headers.get('user-agent') || 'unknown',
+                ip_address: request.headers.get('x-forwarded-for') || 'unknown',
+                user_agent: request.headers.get('user-agent') || 'unknown',
             },
         });
 

@@ -24,7 +24,7 @@ export const GET = requireAuth(async function GET(request, context) {
             where: {
                 userId,
                 type: 'CHECKIN',
-                createdAt: { gte: today }
+                created_at: { gte: today }
             }
         });
 
@@ -34,7 +34,7 @@ export const GET = requireAuth(async function GET(request, context) {
                 userId,
                 type: 'CHECKIN',
             },
-            orderBy: { createdAt: 'desc' },
+            orderBy: { created_at: 'desc' },
             take: 7
         });
 
@@ -96,7 +96,7 @@ export const POST = requireAuth(async function POST(request, context) {
             where: {
                 userId,
                 type: 'CHECKIN',
-                createdAt: { gte: today }
+                created_at: { gte: today }
             }
         });
 
@@ -115,7 +115,7 @@ export const POST = requireAuth(async function POST(request, context) {
             where: {
                 userId,
                 type: 'CHECKIN',
-                createdAt: {
+                created_at: {
                     gte: yesterday,
                     lt: today
                 }
@@ -131,9 +131,9 @@ export const POST = requireAuth(async function POST(request, context) {
                 where: {
                     userId,
                     type: 'CHECKIN',
-                    createdAt: { lt: today }
+                    created_at: { lt: today }
                 },
-                orderBy: { createdAt: 'desc' },
+                orderBy: { created_at: 'desc' },
                 take: 7
             });
 

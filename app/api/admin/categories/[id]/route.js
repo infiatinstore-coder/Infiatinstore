@@ -105,7 +105,7 @@ export async function PATCH(request, { params }) {
                 name: name.trim(),
                 slug: slug.trim(),
                 description: description?.trim() || null,
-                imageUrl: imageUrl?.trim() || null,
+                image_url: imageUrl?.trim() || null,
                 parentId: parentId || null,
             }
         });

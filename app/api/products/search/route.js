@@ -54,21 +54,21 @@ export const GET = asyncHandler(async function GET(request) {
                     ],
                 } : {},
                 // Category filter
-                category ? { categoryId: category } : {},
+                category ? { category_id: category } : {},
                 // Price range
                 {
                     OR: [
                         {
-                            salePrice: {
+                            sale_price: {
                                 gte: minPrice,
                                 lte: maxPrice,
                             },
                         },
                         {
                             AND: [
-                                { salePrice: null },
+                                { sale_price: null },
                                 {
-                                    basePrice: {
+                                    base_price: {
                                         gte: minPrice,
                                         lte: maxPrice,
                                     },
@@ -84,17 +84,17 @@ export const GET = asyncHandler(async function GET(request) {
         let orderBy;
         switch (sortBy) {
             case 'cheapest':
-                orderBy = [{ salePrice: 'asc' }, { basePrice: 'asc' }];
+                orderBy = [{ sale_price: 'asc' }, { base_price: 'asc' }];
                 break;
             case 'expensive':
-                orderBy = [{ salePrice: 'desc' }, { basePrice: 'desc' }];
+                orderBy = [{ sale_price: 'desc' }, { base_price: 'desc' }];
                 break;
             case 'popular':
-                orderBy = [{ isFeatured: 'desc' }, { createdAt: 'desc' }];
+                orderBy = [{ is_featured: 'desc' }, { created_at: 'desc' }];
                 break;
             case 'newest':
             default:
-                orderBy = { createdAt: 'desc' };
+                orderBy = { created_at: 'desc' };
         }
 
         // Step 6: Execute query
@@ -127,7 +127,7 @@ export const GET = asyncHandler(async function GET(request) {
             products.map(async (product) => {
                 const avgRating = await prisma.reviews.aggregate({
                     where: {
-                        productId: product.id,
+                        product_id: product.id,
                         status: 'APPROVED',
                     },
                     _avg: {
@@ -140,13 +140,13 @@ export const GET = asyncHandler(async function GET(request) {
                     name: product.name,
                     slug: product.slug,
                     images: product.images,
-                    basePrice: Number(product.basePrice),
-                    salePrice: product.salePrice ? Number(product.salePrice) : null,
+                    base_price: Number(product.basePrice),
+                    sale_price: product.salePrice ? Number(product.salePrice) : null,
                     stock: product.stock,
                     category: product.category,
                     averageRating: avgRating._avg.rating || 0,
                     reviewCount: product._count.reviews,
-                    isFeatured: product.isFeatured,
+                    is_featured: product.isFeatured,
                 };
             })
         );

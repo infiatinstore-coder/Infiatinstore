@@ -34,31 +34,31 @@ export async function GET(request) {
         ] = await Promise.all([
             // Users created today
             prisma.users.count({
-                where: { createdAt: { gte: startOfToday } },
+                where: { created_at: { gte: startOfToday } },
             }),
             // Users created this week
             prisma.users.count({
-                where: { createdAt: { gte: startOfWeek } },
+                where: { created_at: { gte: startOfWeek } },
             }),
             // Users created this month
             prisma.users.count({
-                where: { createdAt: { gte: startOfMonth } },
+                where: { created_at: { gte: startOfMonth } },
             }),
             // Total users
             prisma.users.count(),
             // Orders today (as proxy for visitors)
             prisma.orders.count({
-                where: { createdAt: { gte: startOfToday } },
+                where: { created_at: { gte: startOfToday } },
             }),
             // Orders this week
             prisma.orders.count({
-                where: { createdAt: { gte: startOfWeek } },
+                where: { created_at: { gte: startOfWeek } },
             }),
             // Guest orders this month (unique visitors approximation)
             prisma.orders.count({
                 where: {
-                    createdAt: { gte: startOfMonth },
-                    userId: null, // Guest orders
+                    created_at: { gte: startOfMonth },
+                    user_id: null, // Guest orders
                 },
             }),
         ]);
@@ -67,12 +67,12 @@ export async function GET(request) {
         const returningCustomersMonth = await prisma.orders.groupBy({
             by: ['userId'],
             where: {
-                createdAt: { gte: startOfMonth },
-                userId: { not: null },
+                created_at: { gte: startOfMonth },
+                user_id: { not: null },
             },
-            _count: { userId: true },
+            _count: { user_id: true },
             having: {
-                userId: {
+                user_id: {
                     _count: { gt: 1 },
                 },
             },
@@ -81,7 +81,7 @@ export async function GET(request) {
         // Bounce rate approximation (orders with only 1 item vs multiple items)
         const singleItemOrders = await prisma.orders.count({
             where: {
-                createdAt: { gte: startOfMonth },
+                created_at: { gte: startOfMonth },
                 items: { some: {} },
             },
         });

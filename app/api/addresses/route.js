@@ -14,8 +14,8 @@ export async function GET(request) {
         const user = auth.user;
 
         const addresses = await prisma.addresses.findMany({
-            where: { userId: user.id },
-            orderBy: [{ isDefault: 'desc' }, { createdAt: 'desc' }],
+            where: { user_id: user.id },
+            orderBy: [{ is_default: 'desc' }, { created_at: 'desc' }],
         });
 
         return NextResponse.json({ success: true, addresses });
@@ -45,14 +45,14 @@ export async function POST(request) {
         // If setting as default, unset other defaults
         if (isDefault) {
             await prisma.addresses.updateMany({
-                where: { userId: user.id },
-                data: { isDefault: false },
+                where: { user_id: user.id },
+                data: { is_default: false },
             });
         }
 
         const address = await prisma.addresses.create({
             data: {
-                userId: user.id,
+                user_id: user.id,
                 label: label || 'HOME',
                 recipientName,
                 phone,
@@ -61,7 +61,7 @@ export async function POST(request) {
                 city,
                 district: district || '',
                 postalCode,
-                isDefault: isDefault || false,
+                is_default: isDefault || false,
             },
         });
 
@@ -94,7 +94,7 @@ export async function PUT(request) {
 
         // Check ownership
         const existing = await prisma.addresses.findFirst({
-            where: { id: addressId, userId: user.id }
+            where: { id: addressId, user_id: user.id }
         });
 
         if (!existing) {
@@ -107,8 +107,8 @@ export async function PUT(request) {
         // If setting as default, unset other defaults
         if (isDefault) {
             await prisma.addresses.updateMany({
-                where: { userId: user.id, id: { not: addressId } },
-                data: { isDefault: false },
+                where: { user_id: user.id, id: { not: addressId } },
+                data: { is_default: false },
             });
         }
 
@@ -116,14 +116,14 @@ export async function PUT(request) {
             where: { id: addressId },
             data: {
                 label: label || existing.label,
-                recipientName: recipientName || existing.recipientName,
+                recipient_name: recipientName || existing.recipientName,
                 phone: phone || existing.phone,
-                fullAddress: fullAddress || existing.fullAddress,
+                full_address: fullAddress || existing.fullAddress,
                 province: province !== undefined ? province : existing.province,
                 city: city || existing.city,
                 district: district !== undefined ? district : existing.district,
-                postalCode: postalCode || existing.postalCode,
-                isDefault: isDefault !== undefined ? isDefault : existing.isDefault,
+                postal_code: postalCode || existing.postalCode,
+                is_default: isDefault !== undefined ? is_default : existing.isDefault,
             },
         });
 
@@ -156,7 +156,7 @@ export async function DELETE(request) {
 
         // Check ownership
         const existing = await prisma.addresses.findFirst({
-            where: { id: addressId, userId: user.id }
+            where: { id: addressId, user_id: user.id }
         });
 
         if (!existing) {

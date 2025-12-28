@@ -26,7 +26,7 @@ export const GET = requireAuth(async function GET(request, context) {
                     select: {
                         id: true,
                         orderNumber: true,
-                        userId: true,
+                        user_id: true,
                         status: true,
                         total: true,
                     },
@@ -56,10 +56,10 @@ export const GET = requireAuth(async function GET(request, context) {
                 orderNumber: payment.order.orderNumber,
                 amount: payment.amount,
                 status: payment.status,
-                paymentMethod: payment.paymentMethod,
-                paidAt: payment.paidAt,
+                payment_method: payment.paymentMethod,
+                paid_at: payment.paidAt,
                 expiresAt: payment.expiresAt,
-                createdAt: payment.createdAt,
+                created_at: payment.createdAt,
             },
         });
     } catch (error) {

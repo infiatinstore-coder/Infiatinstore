@@ -48,7 +48,7 @@ export async function POST(request) {
         // Get user with password
         const user = await prisma.users.findUnique({
             where: { id: auth.user.id },
-            select: { id: true, email: true, passwordHash: true, name: true }
+            select: { id: true, email: true, password_hash: true, name: true }
         });
 
         if (!user) {
@@ -100,7 +100,7 @@ export async function POST(request) {
         await prisma.users.update({
             where: { id: user.id },
             data: {
-                verificationToken: hashedToken,
+                verification_token: hashedToken,
                 verificationTokenExpires: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours
                 // Store pending email in a custom field - you may need to add this to schema
                 // pendingEmail: newEmail.toLowerCase()
@@ -154,7 +154,7 @@ export async function PUT(request) {
         // Find user with matching token
         const user = await prisma.users.findFirst({
             where: {
-                verificationToken: hashedToken,
+                verification_token: hashedToken,
                 verificationTokenExpires: { gt: new Date() }
             }
         });
@@ -183,9 +183,9 @@ export async function PUT(request) {
             where: { id: user.id },
             data: {
                 email: newEmail.toLowerCase(),
-                verificationToken: null,
+                verification_token: null,
                 verificationTokenExpires: null,
-                emailVerifiedAt: new Date()
+                email_verified_at: new Date()
             }
         });
 

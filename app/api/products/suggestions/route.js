@@ -35,12 +35,12 @@ export async function GET(request) {
                 name: true,
                 slug: true,
                 images: true,
-                basePrice: true,
-                salePrice: true,
+                base_price: true,
+                sale_price: true,
             },
             take: limit,
             orderBy: {
-                isFeatured: 'desc',
+                is_featured: 'desc',
             },
         });
 

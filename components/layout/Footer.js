@@ -91,9 +91,9 @@ export default function Footer() {
                             Pusat Kurma & Oleh-Oleh Haji terlengkap di Sidareja. Menyediakan produk berkualitas dengan harga terbaik untuk kebutuhan Ramadhan Anda.
                         </p>
                         <div className="space-y-2 text-sm">
-                            <a href="https://wa.me/6285119467138" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-primary-500 transition-colors">
+                            <a href="https://wa.me/6285119457138" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-primary-500 transition-colors">
                                 <Phone className="w-4 h-4" />
-                                0851-1946-7138 (WhatsApp)
+                                0851-1945-7138 (WhatsApp)
                             </a>
                             <p className="flex items-start gap-2">
                                 <MapPin className="w-4 h-4 mt-0.5 flex-shrink-0" />

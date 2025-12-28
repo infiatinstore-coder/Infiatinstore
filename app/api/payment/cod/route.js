@@ -14,7 +14,7 @@ import { verifyAuth, assertUserCanTransact } from '@/lib/auth';
 /**
  * POST /api/payment/cod
  * Confirm COD payment for an order
- * Body: { orderId: string }
+ * Body: { order_id: string }
  */
 export async function POST(request) {
     try {
@@ -126,8 +126,8 @@ export async function POST(request) {
         // Create COD payment record
         const payment = await prisma.payments.create({
             data: {
-                orderId: order.id,
-                paymentMethod: 'COD',
+                order_id: order.id,
+                payment_method: 'COD',
                 amount: order.total,
                 status: 'PENDING', // COD is pending until delivery confirmed
             }
@@ -138,14 +138,14 @@ export async function POST(request) {
             where: { id: orderId },
             data: {
                 status: 'PROCESSING',
-                paymentMethod: 'COD'
+                payment_method: 'COD'
             }
         });
 
         // TODO: Send WhatsApp notification for COD order
         // await sendWhatsAppNotification({
         //     type: 'COD_ORDER_CONFIRMED',
-        //     orderId: order.id,
+        //     order_id: order.id,
         //     orderNumber: order.orderNumber
         // });
 

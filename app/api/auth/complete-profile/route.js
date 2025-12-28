@@ -37,7 +37,7 @@ export async function POST(request) {
             // For email verification flow
             user = await prisma.users.findFirst({
                 where: {
-                    verificationToken: token,
+                    verification_token: token,
                     verificationTokenExpires: { gt: new Date() }
                 }
             });
@@ -75,8 +75,8 @@ export async function POST(request) {
                 name: name.trim(),
                 passwordHash,
                 status: 'ACTIVE',
-                emailVerifiedAt: user.email ? new Date() : null,
-                verificationToken: null,
+                email_verified_at: user.email ? new Date() : null,
+                verification_token: null,
                 verificationTokenExpires: null,
             },
             select: {
@@ -84,7 +84,7 @@ export async function POST(request) {
                 email: true,
                 name: true,
                 phone: true,
-                avatarUrl: true,
+                avatar_url: true,
                 role: true,
                 status: true,
             }

@@ -22,8 +22,8 @@ export async function GET(request, { params }) {
             voucher: {
                 ...voucher,
                 value: Number(voucher.value),
-                minPurchase: Number(voucher.minPurchase || 0),
-                maxDiscount: voucher.maxDiscount ? Number(voucher.maxDiscount) : null,
+                min_purchase: Number(voucher.minPurchase || 0),
+                max_discount: voucher.maxDiscount ? Number(voucher.maxDiscount) : null,
             },
         });
     } catch (error) {
@@ -47,11 +47,11 @@ export async function PATCH(request, { params }) {
                 code: body.code?.toUpperCase(),
                 type: body.type,
                 value: body.value,
-                minPurchase: body.minPurchase,
-                maxDiscount: body.maxDiscount,
-                usageLimit: body.usageLimit,
-                validFrom: body.validFrom ? new Date(body.validFrom) : undefined,
-                validUntil: body.validUntil ? new Date(body.validUntil) : undefined,
+                min_purchase: body.minPurchase,
+                max_discount: body.maxDiscount,
+                usage_limit: body.usageLimit,
+                valid_from: body.validFrom ? new Date(body.validFrom) : undefined,
+                valid_until: body.validUntil ? new Date(body.validUntil) : undefined,
                 status: body.status,
             },
         });

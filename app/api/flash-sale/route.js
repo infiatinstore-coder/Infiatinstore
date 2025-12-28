@@ -12,8 +12,8 @@ export async function GET() {
         // Get current active flash sale
         const flashSale = await prisma.flash_sales.findFirst({
             where: {
-                startTime: { lte: now },
-                endTime: { gte: now },
+                start_time: { lte: now },
+                end_time: { gte: now },
                 status: 'ACTIVE',
             },
             include: {
@@ -24,7 +24,7 @@ export async function GET() {
                                 id: true,
                                 name: true,
                                 slug: true,
-                                basePrice: true,
+                                base_price: true,
                                 images: true,
                                 stock: true,
                             },
@@ -38,10 +38,10 @@ export async function GET() {
             // Get upcoming flash sale
             const upcomingFlashSale = await prisma.flash_sales.findFirst({
                 where: {
-                    startTime: { gt: now },
+                    start_time: { gt: now },
                     status: 'UPCOMING',
                 },
-                orderBy: { startTime: 'asc' },
+                orderBy: { start_time: 'asc' },
             });
 
             return NextResponse.json({
@@ -49,7 +49,7 @@ export async function GET() {
                 upcoming: upcomingFlashSale ? {
                     id: upcomingFlashSale.id,
                     name: upcomingFlashSale.name,
-                    startTime: upcomingFlashSale.startTime,
+                    start_time: upcomingFlashSale.startTime,
                 } : null,
                 products: [],
             });
@@ -62,10 +62,10 @@ export async function GET() {
             slug: fp.product.slug,
             image: fp.product.images?.[0] || null,
             originalPrice: Number(fp.product.basePrice),
-            salePrice: Number(fp.salePrice),
+            sale_price: Number(fp.salePrice),
             discountPercent: Math.round((1 - Number(fp.salePrice) / Number(fp.product.basePrice)) * 100),
-            stockLimit: fp.stockLimit,
-            soldCount: fp.soldCount,
+            stock_limit: fp.stockLimit,
+            sold_count: fp.soldCount,
             stockLeft: fp.stockLimit - fp.soldCount,
         }));
 
@@ -76,8 +76,8 @@ export async function GET() {
                 name: flashSale.name,
                 slug: flashSale.slug,
                 bannerUrl: flashSale.bannerUrl,
-                startTime: flashSale.startTime,
-                endTime: flashSale.endTime,
+                start_time: flashSale.startTime,
+                end_time: flashSale.endTime,
             },
             products,
         });

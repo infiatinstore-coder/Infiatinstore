@@ -49,7 +49,7 @@ export async function POST(request) {
                     await sendWhatsAppOTP(cleanIdentifier.replace(/^0/, '62'));
                     return NextResponse.json({
                         needOTP: true,
-                        userId: existingUser.id,
+                        user_id: existingUser.id,
                         message: 'Kode OTP baru telah dikirim'
                     });
                 } else {
@@ -57,7 +57,7 @@ export async function POST(request) {
                     await prisma.users.update({
                         where: { id: existingUser.id },
                         data: {
-                            verificationToken: token,
+                            verification_token: token,
                             verificationTokenExpires: new Date(Date.now() + 24 * 60 * 60 * 1000)
                         }
                     });
@@ -65,7 +65,7 @@ export async function POST(request) {
                     await sendVerificationEmail(userForEmail, token);
                     return NextResponse.json({
                         needEmailVerification: true,
-                        userId: existingUser.id,
+                        user_id: existingUser.id,
                         message: 'Link verifikasi baru telah dikirim'
                     });
                 }
@@ -80,7 +80,7 @@ export async function POST(request) {
         // Create new user with PENDING status
         const userData = {
             name: '', // Will be filled in complete-profile
-            passwordHash: '', // Will be filled in complete-profile
+            password_hash: '', // Will be filled in complete-profile
             status: 'PENDING',
             role: 'CUSTOMER',
         };
@@ -101,7 +101,7 @@ export async function POST(request) {
             await sendWhatsAppOTP(userData.phone);
             return NextResponse.json({
                 needOTP: true,
-                userId: newUser.id,
+                user_id: newUser.id,
                 message: 'Kode OTP telah dikirim ke WhatsApp Anda'
             });
         } else {
@@ -110,7 +110,7 @@ export async function POST(request) {
             await sendVerificationEmail(userForEmail, userData.verificationToken);
             return NextResponse.json({
                 needEmailVerification: true,
-                userId: newUser.id,
+                user_id: newUser.id,
                 message: 'Link verifikasi telah dikirim ke email Anda'
             });
         }

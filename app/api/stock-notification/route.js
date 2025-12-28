@@ -14,7 +14,7 @@ import { verifyAuth } from '@/lib/auth';
 /**
  * POST /api/stock-notification
  * Subscribe to stock notification for out-of-stock product
- * Body: { productId: string, variantId?: string }
+ * Body: { product_id: string, variantId?: string }
  */
 export async function POST(request) {
     try {
@@ -65,8 +65,8 @@ export async function POST(request) {
         // Check if already subscribed
         const existing = await prisma.stock_notifications.findFirst({
             where: {
-                userId: user.id,
-                productId: productId,
+                user_id: user.id,
+                product_id: productId,
                 variantId: variantId || null,
                 notified: false
             }
@@ -82,8 +82,8 @@ export async function POST(request) {
         // Create notification subscription
         const notification = await prisma.stock_notifications.create({
             data: {
-                userId: user.id,
-                productId: productId,
+                user_id: user.id,
+                product_id: productId,
                 variantId: variantId || null
             },
             include: {
@@ -127,7 +127,7 @@ export async function GET(request) {
 
         const notifications = await prisma.stock_notifications.findMany({
             where: {
-                userId: user.id,
+                user_id: user.id,
                 notified: false
             },
             include: {
@@ -147,7 +147,7 @@ export async function GET(request) {
                     }
                 }
             },
-            orderBy: { createdAt: 'desc' }
+            orderBy: { created_at: 'desc' }
         });
 
         return NextResponse.json({
@@ -192,7 +192,7 @@ export async function DELETE(request) {
         const deleted = await prisma.stock_notifications.deleteMany({
             where: {
                 id: id,
-                userId: user.id
+                user_id: user.id
             }
         });
 

@@ -20,7 +20,7 @@ export async function GET(request) {
         const before = searchParams.get('before'); // cursor for pagination
 
         const where = {
-            userId: auth.user.id,
+            user_id: auth.user.id,
         };
 
         if (orderId) {
@@ -33,26 +33,26 @@ export async function GET(request) {
 
         const messages = await prisma.chat_messages.findMany({
             where,
-            orderBy: { createdAt: 'desc' },
+            orderBy: { created_at: 'desc' },
             take: limit,
         });
 
         // Mark unread messages as read
         await prisma.chat_messages.updateMany({
             where: {
-                userId: auth.user.id,
-                isAdmin: true, // Only mark admin messages as read
-                readAt: null,
+                user_id: auth.user.id,
+                is_admin: true, // Only mark admin messages as read
+                read_at: null,
             },
-            data: { readAt: new Date() },
+            data: { read_at: new Date() },
         });
 
         // Get unread count
         const unreadCount = await prisma.chat_messages.count({
             where: {
-                userId: auth.user.id,
-                isAdmin: true,
-                readAt: null,
+                user_id: auth.user.id,
+                is_admin: true,
+                read_at: null,
             },
         });
 
@@ -60,9 +60,9 @@ export async function GET(request) {
             messages: messages.reverse().map(m => ({
                 id: m.id,
                 message: m.message,
-                imageUrl: m.imageUrl,
-                isAdmin: m.isAdmin,
-                createdAt: m.createdAt,
+                image_url: m.imageUrl,
+                is_admin: m.isAdmin,
+                created_at: m.createdAt,
             })),
             unreadCount,
         });
@@ -92,11 +92,11 @@ export async function POST(request) {
 
         const chatMessage = await prisma.chat_messages.create({
             data: {
-                userId: auth.user.id,
-                orderId: orderId || null,
+                user_id: auth.user.id,
+                order_id: orderId || null,
                 message: message || '',
-                imageUrl: imageUrl || null,
-                isAdmin: false,
+                image_url: imageUrl || null,
+                is_admin: false,
             },
         });
 
@@ -105,9 +105,9 @@ export async function POST(request) {
             chat: {
                 id: chatMessage.id,
                 message: chatMessage.message,
-                imageUrl: chatMessage.imageUrl,
-                isAdmin: chatMessage.isAdmin,
-                createdAt: chatMessage.createdAt,
+                image_url: chatMessage.imageUrl,
+                is_admin: chatMessage.isAdmin,
+                created_at: chatMessage.createdAt,
             },
         });
     } catch (error) {

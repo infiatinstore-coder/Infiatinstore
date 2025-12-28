@@ -55,7 +55,7 @@ export async function POST(request) {
         await prisma.users.update({
             where: { id: user.id },
             data: {
-                verificationToken: hashedToken,
+                verification_token: hashedToken,
                 verificationTokenExpires: new Date(Date.now() + 24 * 60 * 60 * 1000),
             },
         });

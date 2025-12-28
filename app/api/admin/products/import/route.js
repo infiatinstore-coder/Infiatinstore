@@ -94,14 +94,14 @@ export const POST = requireAuth(async function POST(request, context) {
                     name: row.name,
                     slug: slug,
                     description: row.description || '',
-                    categoryId: row.categoryId,
-                    basePrice: parseFloat(row.basePrice),
-                    salePrice: row.salePrice ? parseFloat(row.salePrice) : null,
+                    category_id: row.categoryId,
+                    base_price: parseFloat(row.basePrice),
+                    sale_price: row.salePrice ? parseFloat(row.salePrice) : null,
                     stock: parseInt(row.stock || 0),
                     weight: parseInt(row.weight || 0),
                     images: row.images ? JSON.parse(row.images) : [],
                     status: row.status || 'ACTIVE',
-                    isFeatured: row.isFeatured === 'true' || row.isFeatured === '1' || row.isFeatured === true
+                    is_featured: row.isFeatured === 'true' || row.isFeatured === '1' || row.isFeatured === true
                 };
 
                 // Check if category exists

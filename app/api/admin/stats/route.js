@@ -36,7 +36,7 @@ export async function GET(request) {
             prisma.payments.aggregate({
                 where: {
                     status: 'SUCCESS',
-                    paidAt: { gte: startOfMonth },
+                    paid_at: { gte: startOfMonth },
                 },
                 _sum: { amount: true },
             }),
@@ -44,30 +44,30 @@ export async function GET(request) {
             prisma.payments.aggregate({
                 where: {
                     status: 'SUCCESS',
-                    paidAt: { gte: startOfLastMonth, lte: endOfLastMonth },
+                    paid_at: { gte: startOfLastMonth, lte: endOfLastMonth },
                 },
                 _sum: { amount: true },
             }),
             // Orders this month
             prisma.orders.count({
-                where: { createdAt: { gte: startOfMonth } },
+                where: { created_at: { gte: startOfMonth } },
             }),
             // Orders last month
             prisma.orders.count({
-                where: { createdAt: { gte: startOfLastMonth, lte: endOfLastMonth } },
+                where: { created_at: { gte: startOfLastMonth, lte: endOfLastMonth } },
             }),
             // New customers this month
             prisma.users.count({
                 where: {
                     role: 'CUSTOMER',
-                    createdAt: { gte: startOfMonth },
+                    created_at: { gte: startOfMonth },
                 },
             }),
             // New customers last month
             prisma.users.count({
                 where: {
                     role: 'CUSTOMER',
-                    createdAt: { gte: startOfLastMonth, lte: endOfLastMonth },
+                    created_at: { gte: startOfLastMonth, lte: endOfLastMonth },
                 },
             }),
             // Products sold this month
@@ -75,7 +75,7 @@ export async function GET(request) {
                 where: {
                     order: {
                         status: { in: ['PAID', 'PROCESSING', 'SHIPPED', 'DELIVERED', 'COMPLETED'] },
-                        createdAt: { gte: startOfMonth },
+                        created_at: { gte: startOfMonth },
                     },
                 },
                 _sum: { quantity: true },
@@ -85,7 +85,7 @@ export async function GET(request) {
                 where: {
                     order: {
                         status: { in: ['PAID', 'PROCESSING', 'SHIPPED', 'DELIVERED', 'COMPLETED'] },
-                        createdAt: { gte: startOfLastMonth, lte: endOfLastMonth },
+                        created_at: { gte: startOfLastMonth, lte: endOfLastMonth },
                     },
                 },
                 _sum: { quantity: true },
@@ -153,7 +153,7 @@ export async function GET(request) {
 
         // Get recent orders
         const recentOrders = await prisma.orders.findMany({
-            orderBy: { createdAt: 'desc' },
+            orderBy: { created_at: 'desc' },
             take: 5,
             include: {
                 user: {

@@ -57,7 +57,7 @@ export async function GET(request) {
         let user = await prisma.users.findFirst({
             where: {
                 OR: [
-                    { googleId: userData.id },
+                    { google_id: userData.id },
                     { email: userData.email }
                 ]
             }
@@ -69,9 +69,9 @@ export async function GET(request) {
                 user = await prisma.users.update({
                     where: { id: user.id },
                     data: {
-                        googleId: userData.id,
+                        google_id: userData.id,
                         status: user.status === 'UNVERIFIED' ? 'ACTIVE' : user.status, // Auto-verify if email matches Google
-                        avatarUrl: user.avatarUrl || userData.picture
+                        avatar_url: user.avatarUrl || userData.picture
                     }
                 });
             }
@@ -81,9 +81,9 @@ export async function GET(request) {
                 data: {
                     name: userData.name,
                     email: userData.email,
-                    googleId: userData.id,
-                    avatarUrl: userData.picture,
-                    passwordHash: '', // No password for OAuth users
+                    google_id: userData.id,
+                    avatar_url: userData.picture,
+                    password_hash: '', // No password for OAuth users
                     status: 'ACTIVE', // Google emails are verified
                     role: 'CUSTOMER'
                 }

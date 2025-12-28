@@ -28,16 +28,16 @@ export async function GET(request, { params }) {
                 name: product.name,
                 slug: product.slug,
                 description: product.description,
-                categoryId: product.categoryId,
+                category_id: product.categoryId,
                 category: product.category,
-                basePrice: Number(product.basePrice),
-                salePrice: product.salePrice ? Number(product.salePrice) : null,
+                base_price: Number(product.basePrice),
+                sale_price: product.salePrice ? Number(product.salePrice) : null,
                 stock: product.stock,
                 weight: product.weight,
                 dimensions: product.dimensions,
                 images: product.images,
                 status: product.status,
-                isFeatured: product.isFeatured,
+                is_featured: product.isFeatured,
                 variants: product.variants.map(v => ({
                     id: v.id,
                     name: v.name,
@@ -85,7 +85,7 @@ export async function PATCH(request, { params }) {
                 description,
                 categoryId,
                 basePrice,
-                salePrice: salePrice || null,
+                sale_price: salePrice || null,
                 stock,
                 weight,
                 dimensions,
@@ -99,14 +99,14 @@ export async function PATCH(request, { params }) {
         if (variants) {
             // Delete existing variants
             await prisma.product_variants.deleteMany({
-                where: { productId: params.id },
+                where: { product_id: params.id },
             });
 
             // Create new variants
             if (variants.length > 0) {
                 await prisma.product_variants.createMany({
                     data: variants.map(v => ({
-                        productId: params.id,
+                        product_id: params.id,
                         name: v.name,
                         sku: v.sku,
                         stock: v.stock,

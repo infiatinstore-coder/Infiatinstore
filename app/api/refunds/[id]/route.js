@@ -52,8 +52,8 @@ export async function PATCH(request, { params }) {
                     where: { id },
                     data: {
                         status: 'APPROVED',
-                        resolvedBy: auth.user.id,
-                        resolvedAt: new Date(),
+                        resolved_by: auth.user.id,
+                        resolved_at: new Date(),
                         adminNotes
                     }
                 });
@@ -75,9 +75,9 @@ export async function PATCH(request, { params }) {
                 where: { id },
                 data: {
                     status: 'REJECTED',
-                    resolvedBy: auth.user.id,
-                    resolvedAt: new Date(),
-                    rejectedReason: rejectedReason || adminNotes,
+                    resolved_by: auth.user.id,
+                    resolved_at: new Date(),
+                    rejected_reason: rejectedReason || adminNotes,
                     adminNotes
                 }
             });

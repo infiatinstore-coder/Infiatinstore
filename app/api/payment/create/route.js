@@ -51,11 +51,11 @@ export async function POST(request) {
                 },
                 address: {
                     select: {
-                        recipientName: true,
+                        recipient_name: true,
                         phone: true,
-                        fullAddress: true,
+                        full_address: true,
                         city: true,
-                        postalCode: true,
+                        postal_code: true,
                     },
                 },
                 items: {
@@ -151,7 +151,7 @@ export async function POST(request) {
         // Prevents: Multiple Midtrans transactions for same order
         // ============================================================
         const existingPayment = await prisma.payments.findUnique({
-            where: { orderId: order.id },
+            where: { order_id: order.id },
         });
 
         if (existingPayment && existingPayment.status === 'SUCCESS') {
@@ -185,26 +185,26 @@ export async function POST(request) {
 
         // Save or update payment record
         const payment = await prisma.payments.upsert({
-            where: { orderId: order.id },
+            where: { order_id: order.id },
             update: {
-                gatewayTransactionId: transaction.token,
-                gatewayResponse: transaction,
+                gateway_transaction_id: transaction.token,
+                gateway_response: transaction,
                 expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours
                 status: 'PENDING', // Transaction started, waiting for user to complete payment
             },
             create: {
-                orderId: order.id,
-                paymentMethod: 'midtrans',
+                order_id: order.id,
+                payment_method: 'midtrans',
                 amount: order.total,
                 status: 'PENDING', // Transaction started
-                gatewayTransactionId: transaction.token,
-                gatewayResponse: transaction,
+                gateway_transaction_id: transaction.token,
+                gateway_response: transaction,
                 expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
             },
         });
 
         console.log('Payment created:', {
-            orderId: order.id,
+            order_id: order.id,
             orderNumber: order.orderNumber,
             amount: order.total,
             token: transaction.token,

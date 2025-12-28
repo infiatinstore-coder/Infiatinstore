@@ -54,7 +54,7 @@ export async function POST(request) {
         // Get current user
         const user = await prisma.users.findUnique({
             where: { id: auth.user.id },
-            select: { id: true, avatarUrl: true }
+            select: { id: true, avatar_url: true }
         });
 
         if (!user) {
@@ -93,7 +93,7 @@ export async function POST(request) {
         // Update user avatar URL
         await prisma.users.update({
             where: { id: user.id },
-            data: { avatarUrl: uploadResult.secure_url }
+            data: { avatar_url: uploadResult.secure_url }
         });
 
         console.log('✅ Avatar uploaded for user:', user.id);
@@ -101,7 +101,7 @@ export async function POST(request) {
         return NextResponse.json({
             success: true,
             message: 'Avatar berhasil diupload',
-            avatarUrl: uploadResult.secure_url
+            avatar_url: uploadResult.secure_url
         });
     } catch (error) {
         console.error('Upload avatar error:', error);
@@ -130,7 +130,7 @@ export async function DELETE(request) {
         // Get current user
         const user = await prisma.users.findUnique({
             where: { id: auth.user.id },
-            select: { id: true, avatarUrl: true }
+            select: { id: true, avatar_url: true }
         });
 
         if (!user || !user.avatarUrl) {
@@ -150,7 +150,7 @@ export async function DELETE(request) {
         // Update user
         await prisma.users.update({
             where: { id: user.id },
-            data: { avatarUrl: null }
+            data: { avatar_url: null }
         });
 
         console.log('✅ Avatar removed for user:', user.id);

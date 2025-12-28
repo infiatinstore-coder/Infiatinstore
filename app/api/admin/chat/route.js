@@ -21,10 +21,10 @@ export async function GET(request) {
             // Get messages for specific user
             const messages = await prisma.chat_messages.findMany({
                 where: { userId },
-                orderBy: { createdAt: 'asc' },
+                orderBy: { created_at: 'asc' },
                 include: {
                     user: {
-                        select: { name: true, email: true, avatarUrl: true },
+                        select: { name: true, email: true, avatar_url: true },
                     },
                 },
             });
@@ -33,9 +33,9 @@ export async function GET(request) {
                 messages: messages.map(m => ({
                     id: m.id,
                     message: m.message,
-                    imageUrl: m.imageUrl,
-                    isAdmin: m.isAdmin,
-                    createdAt: m.createdAt,
+                    image_url: m.imageUrl,
+                    is_admin: m.isAdmin,
+                    created_at: m.createdAt,
                 })),
                 user: messages[0]?.user || null,
             });
@@ -58,7 +58,7 @@ export async function GET(request) {
 
         return NextResponse.json({
             conversations: conversations.map(c => ({
-                userId: c.userId,
+                user_id: c.userId,
                 userName: c.userName,
                 userAvatar: c.userAvatar,
                 lastMessage: c.lastMessage,
@@ -93,10 +93,10 @@ export async function POST(request) {
         const chatMessage = await prisma.chat_messages.create({
             data: {
                 userId,
-                orderId: orderId || null,
+                order_id: orderId || null,
                 message: message || '',
-                imageUrl: imageUrl || null,
-                isAdmin: true,
+                image_url: imageUrl || null,
+                is_admin: true,
             },
         });
 
@@ -105,8 +105,8 @@ export async function POST(request) {
             chat: {
                 id: chatMessage.id,
                 message: chatMessage.message,
-                isAdmin: true,
-                createdAt: chatMessage.createdAt,
+                is_admin: true,
+                created_at: chatMessage.createdAt,
             },
         });
     } catch (error) {

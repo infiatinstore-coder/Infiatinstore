@@ -5,7 +5,7 @@ import prisma from '@/lib/prisma';
 export async function GET(request) {
     try {
         const vouchers = await prisma.vouchers.findMany({
-            orderBy: { createdAt: 'desc' },
+            orderBy: { created_at: 'desc' },
         });
 
         return NextResponse.json({
@@ -16,12 +16,12 @@ export async function GET(request) {
                 name: v.code, // Use code as name if no name field
                 type: v.type,
                 value: Number(v.value),
-                minPurchase: Number(v.minPurchase || 0),
-                maxDiscount: v.maxDiscount ? Number(v.maxDiscount) : null,
-                usageLimit: v.usageLimit,
-                usedCount: v.usedCount || 0,
-                validFrom: v.validFrom,
-                validUntil: v.validUntil,
+                min_purchase: Number(v.minPurchase || 0),
+                max_discount: v.maxDiscount ? Number(v.maxDiscount) : null,
+                usage_limit: v.usageLimit,
+                used_count: v.usedCount || 0,
+                valid_from: v.validFrom,
+                valid_until: v.validUntil,
                 status: v.status,
                 isActive: v.status === 'ACTIVE',
             })),
@@ -45,11 +45,11 @@ export async function POST(request) {
                 code: body.code.toUpperCase(),
                 type: body.type || 'PERCENTAGE',
                 value: body.value,
-                minPurchase: body.minPurchase || 0,
-                maxDiscount: body.maxDiscount || null,
-                usageLimit: body.usageLimit || null,
-                validFrom: new Date(body.validFrom),
-                validUntil: new Date(body.validUntil),
+                min_purchase: body.minPurchase || 0,
+                max_discount: body.maxDiscount || null,
+                usage_limit: body.usageLimit || null,
+                valid_from: new Date(body.validFrom),
+                valid_until: new Date(body.validUntil),
                 status: body.status || 'ACTIVE',
             },
         });

@@ -14,7 +14,7 @@ export async function POST(request) {
         const cart = {
             items: cartItems,
             subtotal: cartItems.reduce((sum, item) => sum + item.subtotal, 0),
-            shippingCost: shippingCost || 15000,
+            shipping_cost: shippingCost || 15000,
             userId
         };
 

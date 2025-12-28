@@ -21,7 +21,7 @@ export const POST = requireAuth(async function POST(request, context) {
 
         // Check if already registered
         const existing = await prisma.affiliates.findUnique({
-            where: { userId: context.user.id }
+            where: { user_id: context.user.id }
         });
 
         if (existing) {
@@ -37,11 +37,11 @@ export const POST = requireAuth(async function POST(request, context) {
         // Create affiliate record
         const affiliate = await prisma.affiliates.create({
             data: {
-                userId: context.user.id,
+                user_id: context.user.id,
                 referralCode,
                 bankAccount,
                 tier: 'BRONZE',
-                commissionRate: 0.05 // 5% default
+                commission_rate: 0.05 // 5% default
             }
         });
 
@@ -49,9 +49,9 @@ export const POST = requireAuth(async function POST(request, context) {
             success: true,
             affiliate: {
                 id: affiliate.id,
-                referralCode: affiliate.referralCode,
+                referral_code: affiliate.referralCode,
                 tier: affiliate.tier,
-                commissionRate: parseFloat(affiliate.commissionRate)
+                commission_rate: parseFloat(affiliate.commissionRate)
             }
         });
 
@@ -71,7 +71,7 @@ export const POST = requireAuth(async function POST(request, context) {
 export const GET = requireAuth(async function GET(request, context) {
     try {
         const affiliate = await prisma.affiliates.findUnique({
-            where: { userId: context.user.id },
+            where: { user_id: context.user.id },
             include: {
                 _count: {
                     select: {
@@ -92,12 +92,12 @@ export const GET = requireAuth(async function GET(request, context) {
             registered: true,
             affiliate: {
                 id: affiliate.id,
-                referralCode: affiliate.referralCode,
+                referral_code: affiliate.referralCode,
                 tier: affiliate.tier,
-                commissionRate: parseFloat(affiliate.commissionRate),
-                totalEarnings: parseFloat(affiliate.totalEarnings),
-                availableBalance: parseFloat(affiliate.availableBalance),
-                totalReferrals: affiliate._count.referrals,
+                commission_rate: parseFloat(affiliate.commissionRate),
+                total_earnings: parseFloat(affiliate.totalEarnings),
+                available_balance: parseFloat(affiliate.availableBalance),
+                total_referrals: affiliate._count.referrals,
                 totalCommissions: affiliate._count.commissions,
                 status: affiliate.status
             }

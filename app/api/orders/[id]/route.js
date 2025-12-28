@@ -16,7 +16,7 @@ export async function GET(request, { params }) {
         const order = await prisma.orders.findFirst({
             where: {
                 id,
-                userId: user.id,
+                user_id: user.id,
             },
             include: {
                 items: {
@@ -58,7 +58,7 @@ export async function PUT(request, { params }) {
         const { action } = body;
 
         const order = await prisma.orders.findFirst({
-            where: { id, userId: user.id },
+            where: { id, user_id: user.id },
             include: { items: true },
         });
 
@@ -83,7 +83,7 @@ export async function PUT(request, { params }) {
 
                 // Update payment status
                 await tx.payment.updateMany({
-                    where: { orderId: id },
+                    where: { order_id: id },
                     data: { status: 'FAILED' },
                 });
 

@@ -42,7 +42,7 @@ export async function POST(request) {
         const existingReview = await prisma.reviews.findFirst({
             where: {
                 productId,
-                userId: user.userId,
+                user_id: user.userId,
             },
         });
 
@@ -57,7 +57,7 @@ export async function POST(request) {
         //   where: {
         //     productId,
         //     order: {
-        //       userId: user.userId,
+        //       user_id: user.userId,
         //       status: 'COMPLETED',
         //     },
         //   },
@@ -71,7 +71,7 @@ export async function POST(request) {
         // Create review
         const review = await prisma.reviews.create({
             data: {
-                userId: user.id,
+                user_id: user.id,
                 productId,
                 rating,
                 title: title || null,
@@ -117,7 +117,7 @@ export async function GET(request) {
         // Build orderBy based on sortBy
         let orderBy = {};
         if (sortBy === 'recent') {
-            orderBy = { createdAt: 'desc' };
+            orderBy = { created_at: 'desc' };
         } else if (sortBy === 'helpful') {
             orderBy = { helpfulCount: 'desc' };
         } else if (sortBy === 'rating') {

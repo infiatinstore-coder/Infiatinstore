@@ -22,14 +22,14 @@ export async function GET(request) {
                     { status: 'ACTIVE' },
                     {
                         status: 'UPCOMING',
-                        startTime: { lte: new Date(now.getTime() + 24 * 60 * 60 * 1000) }, // within 24h
+                        start_time: { lte: new Date(now.getTime() + 24 * 60 * 60 * 1000) }, // within 24h
                     },
                 ],
             }
             : {
                 status: 'ACTIVE',
-                startTime: { lte: now },
-                endTime: { gte: now },
+                start_time: { lte: now },
+                end_time: { gte: now },
             };
 
         const flashSales = await prisma.flash_sales.findMany({
@@ -43,19 +43,19 @@ export async function GET(request) {
                                 name: true,
                                 slug: true,
                                 images: true,
-                                basePrice: true,
-                                salePrice: true,
+                                base_price: true,
+                                sale_price: true,
                                 stock: true,
                             },
                         },
                     },
                     orderBy: {
-                        soldCount: 'desc',
+                        sold_count: 'desc',
                     },
                 },
             },
             orderBy: {
-                startTime: 'asc',
+                start_time: 'asc',
             },
             take: limit,
         });
@@ -78,8 +78,8 @@ export async function GET(request) {
                     flashSalePrice: Number(fp.salePrice),
                     originalPrice,
                     discountPercentage,
-                    stockLimit: fp.stockLimit,
-                    soldCount: fp.soldCount,
+                    stock_limit: fp.stockLimit,
+                    sold_count: fp.soldCount,
                     stockRemaining,
                     stockPercentage,
                     isAlmostGone: stockPercentage <= 20,
@@ -92,8 +92,8 @@ export async function GET(request) {
                 slug: sale.slug,
                 description: sale.description,
                 bannerUrl: sale.bannerUrl,
-                startTime: sale.startTime,
-                endTime: sale.endTime,
+                start_time: sale.startTime,
+                end_time: sale.endTime,
                 status: isExpired ? 'ENDED' : sale.status,
                 timeRemaining: Math.max(0, timeRemaining),
                 products: productsWithDiscount,

@@ -42,7 +42,7 @@ export async function GET(request) {
         const [customers, total] = await Promise.all([
             prisma.users.findMany({
                 where,
-                orderBy: { createdAt: 'desc' },
+                orderBy: { created_at: 'desc' },
                 skip: (page - 1) * limit,
                 take: limit,
                 include: {
@@ -64,13 +64,13 @@ export async function GET(request) {
             name: customer.name,
             email: customer.email,
             phone: customer.phone || '-',
-            avatarUrl: customer.avatarUrl,
+            avatar_url: customer.avatarUrl,
             status: customer.status,
             orderCount: customer._count.orders,
             reviewCount: customer._count.reviews,
             totalSpent: customer.orders.reduce((sum, o) => sum + Number(o.total), 0),
             emailVerified: !!customer.emailVerifiedAt,
-            createdAt: customer.createdAt,
+            created_at: customer.createdAt,
         }));
 
         return NextResponse.json({

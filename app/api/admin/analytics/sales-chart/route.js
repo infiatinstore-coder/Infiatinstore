@@ -29,11 +29,11 @@ export async function GET(request) {
         // Fetch orders grouped by date
         const orders = await prisma.orders.findMany({
             where: {
-                createdAt: { gte: startDate },
+                created_at: { gte: startDate },
                 status: { in: ['PAID', 'PROCESSING', 'SHIPPED', 'DELIVERED', 'COMPLETED'] },
             },
             select: {
-                createdAt: true,
+                created_at: true,
                 total: true,
                 status: true,
             },
@@ -74,7 +74,7 @@ export async function GET(request) {
         const statusDistribution = await prisma.orders.groupBy({
             by: ['status'],
             where: {
-                createdAt: { gte: startDate },
+                created_at: { gte: startDate },
             },
             _count: { status: true },
         });
@@ -89,7 +89,7 @@ export async function GET(request) {
             by: ['productId'],
             where: {
                 order: {
-                    createdAt: { gte: startDate },
+                    created_at: { gte: startDate },
                     status: { in: ['PAID', 'PROCESSING', 'SHIPPED', 'DELIVERED', 'COMPLETED'] },
                 },
             },

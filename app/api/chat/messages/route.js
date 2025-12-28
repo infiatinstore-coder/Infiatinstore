@@ -29,11 +29,11 @@ export const POST = requireAuth(async function POST(request, context) {
         // Create chat message
         const chatMessage = await prisma.chat_messages.create({
             data: {
-                userId: context.user.id,
+                user_id: context.user.id,
                 message,
                 orderId,
                 imageUrl,
-                isAdmin: false
+                is_admin: false
             }
         });
 
@@ -61,7 +61,7 @@ export const GET = requireAuth(async function GET(request, context) {
         const orderId = searchParams.get('orderId');
 
         const where = {
-            userId: context.user.id
+            user_id: context.user.id
         };
 
         if (orderId) {
@@ -70,19 +70,19 @@ export const GET = requireAuth(async function GET(request, context) {
 
         const messages = await prisma.chat_messages.findMany({
             where,
-            orderBy: { createdAt: 'asc' },
+            orderBy: { created_at: 'asc' },
             take: 100
         });
 
         // Mark admin messages as read
         await prisma.chat_messages.updateMany({
             where: {
-                userId: context.user.id,
-                isAdmin: true,
-                readAt: null
+                user_id: context.user.id,
+                is_admin: true,
+                read_at: null
             },
             data: {
-                readAt: new Date()
+                read_at: new Date()
             }
         });
 
@@ -90,11 +90,11 @@ export const GET = requireAuth(async function GET(request, context) {
             messages: messages.map(m => ({
                 id: m.id,
                 message: m.message,
-                imageUrl: m.imageUrl,
-                isAdmin: m.isAdmin,
-                orderId: m.orderId,
-                createdAt: m.createdAt,
-                readAt: m.readAt
+                image_url: m.imageUrl,
+                is_admin: m.isAdmin,
+                order_id: m.orderId,
+                created_at: m.createdAt,
+                read_at: m.readAt
             }))
         });
 

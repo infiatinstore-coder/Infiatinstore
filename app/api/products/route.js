@@ -48,16 +48,16 @@ export async function GET(request) {
         let orderBy = {};
         switch (sort) {
             case 'price-low':
-                orderBy = { basePrice: 'asc' };
+                orderBy = { base_price: 'asc' };
                 break;
             case 'price-high':
-                orderBy = { basePrice: 'desc' };
+                orderBy = { base_price: 'desc' };
                 break;
             case 'name':
                 orderBy = { name: 'asc' };
                 break;
             default:
-                orderBy = { createdAt: 'desc' };
+                orderBy = { created_at: 'desc' };
         }
 
         // Get products with pagination
@@ -83,7 +83,7 @@ export async function GET(request) {
         const productsWithRating = await Promise.all(
             products.map(async (product) => {
                 const avgRating = await prisma.reviews.aggregate({
-                    where: { productId: product.id, status: 'APPROVED' },
+                    where: { product_id: product.id, status: 'APPROVED' },
                     _avg: { rating: true },
                 });
                 return {

@@ -19,7 +19,7 @@ export async function POST(request) {
         const data = await request.json();
 
         const result = await returnManager.createReturnRequest({
-            userId: auth.user.id,
+            user_id: auth.user.id,
             ...data
         });
 

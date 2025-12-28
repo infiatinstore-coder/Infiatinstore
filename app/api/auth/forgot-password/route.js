@@ -44,7 +44,7 @@ export async function POST(request) {
         await prisma.users.update({
             where: { id: user.id },
             data: {
-                resetPasswordToken: hashedToken,
+                reset_password_token: hashedToken,
                 resetPasswordExpires: new Date(Date.now() + 60 * 60 * 1000), // 1 hour
             },
         });

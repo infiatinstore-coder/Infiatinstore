@@ -22,7 +22,7 @@ export const GET = asyncHandler(async function GET(request) {
 
     const isAdmin = ['ADMIN', 'SUPER_ADMIN'].includes(auth.user.role);
 
-    const where = isAdmin ? {} : { userId: auth.user.id };
+    const where = isAdmin ? {} : { user_id: auth.user.id };
 
     const refunds = await prisma.refund_requests.findMany({
         where,
@@ -31,7 +31,7 @@ export const GET = asyncHandler(async function GET(request) {
                 select: {
                     orderNumber: true,
                     total: true,
-                    createdAt: true
+                    created_at: true
                 }
             },
             user: {
@@ -42,7 +42,7 @@ export const GET = asyncHandler(async function GET(request) {
             }
         },
         orderBy: {
-            createdAt: 'desc'
+            created_at: 'desc'
         }
     });
 
@@ -68,7 +68,7 @@ export const POST = asyncHandler(async function POST(request) {
     const order = await prisma.orders.findFirst({
         where: {
             id: orderId,
-            userId: auth.user.id
+            user_id: auth.user.id
         },
         include: {
             refundRequests: true
@@ -97,7 +97,7 @@ export const POST = asyncHandler(async function POST(request) {
     const refund = await prisma.refund_requests.create({
         data: {
             orderId,
-            userId: auth.user.id,
+            user_id: auth.user.id,
             reason,
             refundType,
             amount: order.total,

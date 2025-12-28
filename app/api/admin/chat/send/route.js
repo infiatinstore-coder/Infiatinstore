@@ -41,7 +41,7 @@ export const POST = requireAuth(async function POST(request, context) {
                 message,
                 orderId,
                 imageUrl,
-                isAdmin: true
+                is_admin: true
             },
             include: {
                 user: {
@@ -98,11 +98,11 @@ export const GET = requireAuth(async function GET(request, context) {
                 id: true
             },
             _max: {
-                createdAt: true
+                created_at: true
             },
             orderBy: {
                 _max: {
-                    createdAt: 'desc'
+                    created_at: 'desc'
                 }
             }
         });
@@ -117,22 +117,22 @@ export const GET = requireAuth(async function GET(request, context) {
                         name: true,
                         email: true,
                         phone: true,
-                        avatarUrl: true
+                        avatar_url: true
                     }
                 });
 
                 // Get last message
                 const lastMessage = await prisma.chat_messages.findFirst({
-                    where: { userId: conv.userId },
-                    orderBy: { createdAt: 'desc' }
+                    where: { user_id: conv.userId },
+                    orderBy: { created_at: 'desc' }
                 });
 
                 // Count unread messages from customer
                 const unreadCount = await prisma.chat_messages.count({
                     where: {
-                        userId: conv.userId,
-                        isAdmin: false,
-                        readAt: null
+                        user_id: conv.userId,
+                        is_admin: false,
+                        read_at: null
                     }
                 });
 

@@ -24,12 +24,12 @@ export async function GET(request) {
                 name: true,
                 email: true,
                 phone: true,
-                avatarUrl: true,
+                avatar_url: true,
                 role: true,
                 status: true,
-                createdAt: true,
+                created_at: true,
                 addresses: {
-                    orderBy: { isDefault: 'desc' },
+                    orderBy: { is_default: 'desc' },
                 },
             },
         });
@@ -78,7 +78,7 @@ export async function PUT(request) {
                 name: true,
                 email: true,
                 phone: true,
-                avatarUrl: true,
+                avatar_url: true,
                 role: true,
             },
         });

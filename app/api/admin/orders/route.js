@@ -52,7 +52,7 @@ export async function GET(request) {
         const [orders, total] = await Promise.all([
             prisma.orders.findMany({
                 where,
-                orderBy: { createdAt: 'desc' },
+                orderBy: { created_at: 'desc' },
                 skip: (page - 1) * limit,
                 take: limit,
                 include: {
@@ -70,10 +70,10 @@ export async function GET(request) {
                         },
                     },
                     payment: {
-                        select: { status: true, paymentMethod: true, paidAt: true },
+                        select: { status: true, payment_method: true, paid_at: true },
                     },
                     shipment: {
-                        select: { status: true, trackingNumber: true, courier: true },
+                        select: { status: true, tracking_number: true, courier: true },
                     },
                 },
             }),
@@ -97,21 +97,21 @@ export async function GET(request) {
                 price: Number(item.priceAtPurchase),
                 image: item.product?.images?.[0] || null,
             })),
-            itemCount: order.items.reduce((sum, item) => sum + item.quantity, 0),
+            item_count: order.items.reduce((sum, item) => sum + item.quantity, 0),
             subtotal: Number(order.subtotal),
-            shippingCost: Number(order.shippingCost),
+            shipping_cost: Number(order.shippingCost),
             discount: Number(order.discount),
             tax: Number(order.tax),
             total: Number(order.total),
             status: order.status,
             paymentStatus: order.payment?.status || 'PENDING',
-            paymentMethod: order.payment?.paymentMethod || order.paymentMethod,
+            payment_method: order.payment?.paymentMethod || order.paymentMethod,
             shippingStatus: order.shipment?.status || 'PENDING',
-            trackingNumber: order.shipment?.trackingNumber,
+            tracking_number: order.shipment?.trackingNumber,
             courier: order.shipment?.courier || order.shippingMethod,
             notes: order.notes,
-            createdAt: order.createdAt,
-            paidAt: order.payment?.paidAt,
+            created_at: order.createdAt,
+            paid_at: order.payment?.paidAt,
         }));
 
         return NextResponse.json({
@@ -216,7 +216,7 @@ export async function PATCH(request) {
                 status,
                 auth.user.id, // changedBy: admin user ID
                 notes || `Admin update via dashboard`,
-                { trackingNumber: trackingNumber || null }
+                { tracking_number: trackingNumber || null }
             );
         } catch (error) {
             // State machine will throw if invalid transition
@@ -237,7 +237,7 @@ export async function PATCH(request) {
                 data: {
                     trackingNumber,
                     status: 'IN_TRANSIT',
-                    shippedAt: new Date(),
+                    shipped_at: new Date(),
                 },
             });
         }
@@ -246,12 +246,12 @@ export async function PATCH(request) {
         if (status === 'SHIPPED') {
             await prisma.shipment.updateMany({
                 where: { orderId },
-                data: { status: 'IN_TRANSIT', shippedAt: new Date() },
+                data: { status: 'IN_TRANSIT', shipped_at: new Date() },
             });
         } else if (status === 'DELIVERED') {
             await prisma.shipment.updateMany({
                 where: { orderId },
-                data: { status: 'DELIVERED', deliveredAt: new Date() },
+                data: { status: 'DELIVERED', delivered_at: new Date() },
             });
         }
 

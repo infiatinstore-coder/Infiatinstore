@@ -86,7 +86,7 @@ export async function POST(request) {
             email: user.email,
             phone: user.phone,
             role: user.role,
-            avatarUrl: user.avatar_url,
+            avatar_url: user.avatar_url,
         };
 
         // Create response with cookie

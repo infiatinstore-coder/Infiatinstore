@@ -51,7 +51,7 @@ export async function GET(request) {
                         select: { name: true, email: true, phone: true },
                     },
                 },
-                orderBy: { createdAt: 'desc' },
+                orderBy: { created_at: 'desc' },
                 skip: (page - 1) * limit,
                 take: limit,
             }),
@@ -116,8 +116,8 @@ export const PUT = requireAdmin(async function PUT(request, context) {
 
         const updateData = {
             status,
-            processedBy: context.user.id,
-            processedAt: new Date(),
+            processed_by: context.user.id,
+            processed_at: new Date(),
         };
 
         if (note) {
