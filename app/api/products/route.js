@@ -24,7 +24,7 @@ export async function GET(request) {
         };
 
         if (category) {
-            where.category = { slug: category };
+            where.categories = { slug: category };
         }
 
         if (search) {
@@ -35,7 +35,7 @@ export async function GET(request) {
         }
 
         if (featured === 'true') {
-            where.isFeatured = true;
+            where.is_featured = true;
         }
 
         if (minPrice || maxPrice) {

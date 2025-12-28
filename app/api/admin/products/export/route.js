@@ -25,15 +25,15 @@ export const GET = requireAuth(async function GET(request, context) {
             name: p.name,
             slug: p.slug,
             description: p.description,
-            category_id: p.categoryId,
-            categoryName: p.category?.name || '',
+            category_id: p.category_id,
+            categoryName: p.categories?.name || '',
             base_price: Number(p.base_price),
             sale_price: p.sale_price ? Number(p.sale_price) : null,
             stock: p.stock,
             weight: p.weight,
             images: JSON.stringify(p.images),
             status: p.status,
-            is_featured: p.isFeatured
+            is_featured: p.is_featured
         }));
 
         const workbook = await createExcelFromJSON(data, 'Products');
