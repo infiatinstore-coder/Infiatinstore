@@ -12,7 +12,7 @@ export async function GET(request, { params }) {
                 categories: {
                     select: { id: true, name: true, slug: true },
                 },
-                variants: {
+                product_variants: {
                     orderBy: { name: 'asc' },
                 },
                 reviews: {
