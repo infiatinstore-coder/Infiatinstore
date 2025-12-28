@@ -11,7 +11,7 @@ export async function GET(request) {
     try {
         // Verify admin access
         const auth = await verifyAuth(request);
-        if (!auth.success || !['ADMIN', 'SUPER_ADMIN'].includes(auth.user.role)) {
+        if (!auth.success || !['ADMIN', 'SUPER_ADMIN'].includes(auth.users.role)) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
@@ -70,7 +70,7 @@ export async function GET(request) {
             reviewCount: customer._count.reviews,
             totalSpent: customer.orders.reduce((sum, o) => sum + Number(o.total), 0),
             emailVerified: !!customer.emailVerifiedAt,
-            created_at: customer.createdAt,
+            created_at: customer.created_at,
         }));
 
         return NextResponse.json({
@@ -96,7 +96,7 @@ export async function PATCH(request) {
     try {
         // Verify admin access
         const auth = await verifyAuth(request);
-        if (!auth.success || !['ADMIN', 'SUPER_ADMIN'].includes(auth.user.role)) {
+        if (!auth.success || !['ADMIN', 'SUPER_ADMIN'].includes(auth.users.role)) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
@@ -124,7 +124,7 @@ export async function PATCH(request) {
 
         return NextResponse.json({
             message: `Pelanggan berhasil ${status === 'SUSPENDED' ? 'dinonaktifkan' : 'diaktifkan'}`,
-            user: {
+            users: {
                 id: user.id,
                 name: user.name,
                 status: user.status,

@@ -6,14 +6,14 @@ import { verifyAuth } from '@/lib/auth';
 export async function GET(request, { params }) {
     try {
         const auth = await verifyAuth(request);
-        if (!auth.success || !['ADMIN', 'SUPER_ADMIN'].includes(auth.user.role)) {
+        if (!auth.success || !['ADMIN', 'SUPER_ADMIN'].includes(auth.users.role)) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
         const product = await prisma.products.findUnique({
             where: { id: params.id },
             include: {
-                category: { select: { id: true, name: true } },
+                categories: { select: { id: true, name: true } },
                 variants: true,
             },
         });
@@ -23,21 +23,21 @@ export async function GET(request, { params }) {
         }
 
         return NextResponse.json({
-            product: {
+            products: {
                 id: product.id,
                 name: product.name,
                 slug: product.slug,
                 description: product.description,
-                category_id: product.categoryId,
-                category: product.category,
-                base_price: Number(product.basePrice),
-                sale_price: product.salePrice ? Number(product.salePrice) : null,
+                category_id: product.categoriesId,
+                category: product.categories,
+                base_price: Number(product.base_price),
+                sale_price: product.sale_price ? Number(product.sale_price) : null,
                 stock: product.stock,
                 weight: product.weight,
                 dimensions: product.dimensions,
                 images: product.images,
                 status: product.status,
-                is_featured: product.isFeatured,
+                is_featured: product.is_featured,
                 variants: product.variants.map(v => ({
                     id: v.id,
                     name: v.name,
@@ -57,7 +57,7 @@ export async function GET(request, { params }) {
 export async function PATCH(request, { params }) {
     try {
         const auth = await verifyAuth(request);
-        if (!auth.success || !['ADMIN', 'SUPER_ADMIN'].includes(auth.user.role)) {
+        if (!auth.success || !['ADMIN', 'SUPER_ADMIN'].includes(auth.users.role)) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
@@ -118,7 +118,7 @@ export async function PATCH(request, { params }) {
 
         return NextResponse.json({
             message: 'Produk berhasil diupdate',
-            product: {
+            products: {
                 id: product.id,
                 name: product.name,
                 slug: product.slug,
@@ -134,7 +134,7 @@ export async function PATCH(request, { params }) {
 export async function DELETE(request, { params }) {
     try {
         const auth = await verifyAuth(request);
-        if (!auth.success || !['ADMIN', 'SUPER_ADMIN'].includes(auth.user.role)) {
+        if (!auth.success || !['ADMIN', 'SUPER_ADMIN'].includes(auth.users.role)) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 

@@ -29,7 +29,7 @@ export const POST = requireAuth(async function POST(request, context) {
         // Create chat message
         const chatMessage = await prisma.chat_messages.create({
             data: {
-                user_id: context.user.id,
+                user_id: context.users.id,
                 message,
                 orderId,
                 imageUrl,
@@ -61,7 +61,7 @@ export const GET = requireAuth(async function GET(request, context) {
         const orderId = searchParams.get('orderId');
 
         const where = {
-            user_id: context.user.id
+            user_id: context.users.id
         };
 
         if (orderId) {
@@ -77,7 +77,7 @@ export const GET = requireAuth(async function GET(request, context) {
         // Mark admin messages as read
         await prisma.chat_messages.updateMany({
             where: {
-                user_id: context.user.id,
+                user_id: context.users.id,
                 is_admin: true,
                 read_at: null
             },
@@ -93,7 +93,7 @@ export const GET = requireAuth(async function GET(request, context) {
                 image_url: m.imageUrl,
                 is_admin: m.isAdmin,
                 order_id: m.orderId,
-                created_at: m.createdAt,
+                created_at: m.created_at,
                 read_at: m.readAt
             }))
         });

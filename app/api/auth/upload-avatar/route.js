@@ -53,7 +53,7 @@ export async function POST(request) {
 
         // Get current user
         const user = await prisma.users.findUnique({
-            where: { id: auth.user.id },
+            where: { id: auth.users.id },
             select: { id: true, avatar_url: true }
         });
 
@@ -81,9 +81,9 @@ export async function POST(request) {
         );
 
         // Delete old avatar from Cloudinary if exists
-        if (user.avatarUrl) {
+        if (user.avatar_url) {
             try {
-                await deleteFromCloudinary(user.avatarUrl);
+                await deleteFromCloudinary(user.avatar_url);
             } catch (error) {
                 console.error('Failed to delete old avatar:', error);
                 // Continue anyway, not critical
@@ -96,7 +96,7 @@ export async function POST(request) {
             data: { avatar_url: uploadResult.secure_url }
         });
 
-        console.log('✅ Avatar uploaded for user:', user.id);
+        console.log('✅ Avatar uploaded for users:', user.id);
 
         return NextResponse.json({
             success: true,
@@ -129,11 +129,11 @@ export async function DELETE(request) {
 
         // Get current user
         const user = await prisma.users.findUnique({
-            where: { id: auth.user.id },
+            where: { id: auth.users.id },
             select: { id: true, avatar_url: true }
         });
 
-        if (!user || !user.avatarUrl) {
+        if (!user || !user.avatar_url) {
             return NextResponse.json(
                 { error: 'Tidak ada avatar untuk dihapus' },
                 { status: 400 }
@@ -142,7 +142,7 @@ export async function DELETE(request) {
 
         // Delete from Cloudinary
         try {
-            await deleteFromCloudinary(user.avatarUrl);
+            await deleteFromCloudinary(user.avatar_url);
         } catch (error) {
             console.error('Failed to delete avatar from Cloudinary:', error);
         }
@@ -153,7 +153,7 @@ export async function DELETE(request) {
             data: { avatar_url: null }
         });
 
-        console.log('✅ Avatar removed for user:', user.id);
+        console.log('✅ Avatar removed for users:', user.id);
 
         return NextResponse.json({
             success: true,

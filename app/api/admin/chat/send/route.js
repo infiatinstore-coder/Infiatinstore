@@ -18,7 +18,7 @@ import { requireAuth } from '@/lib/auth';
 export const POST = requireAuth(async function POST(request, context) {
     try {
         // Check admin permission
-        if (context.user.role !== 'ADMIN' && context.user.role !== 'SUPER_ADMIN') {
+        if (context.users.role !== 'ADMIN' && context.users.role !== 'SUPER_ADMIN') {
             return NextResponse.json(
                 { error: 'Unauthorized. Admin access required.' },
                 { status: 403 }
@@ -44,7 +44,7 @@ export const POST = requireAuth(async function POST(request, context) {
                 is_admin: true
             },
             include: {
-                user: {
+                users: {
                     select: {
                         name: true,
                         email: true,
@@ -84,7 +84,7 @@ export const POST = requireAuth(async function POST(request, context) {
 export const GET = requireAuth(async function GET(request, context) {
     try {
         // Check admin permission
-        if (context.user.role !== 'ADMIN' && context.user.role !== 'SUPER_ADMIN') {
+        if (context.users.role !== 'ADMIN' && context.users.role !== 'SUPER_ADMIN') {
             return NextResponse.json(
                 { error: 'Unauthorized. Admin access required.' },
                 { status: 403 }
@@ -139,7 +139,7 @@ export const GET = requireAuth(async function GET(request, context) {
                 return {
                     user,
                     messageCount: conv._count.id,
-                    lastMessageAt: conv._max.createdAt,
+                    lastMessageAt: conv._max.created_at,
                     lastMessage: lastMessage?.message,
                     unreadCount
                 };

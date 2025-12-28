@@ -60,7 +60,7 @@ export async function POST(request) {
             voucher,
         });
     } catch (error) {
-        console.error('Error creating voucher:', error);
+        console.error('Error creating vouchers:', error);
         return NextResponse.json(
             { success: false, error: error.message },
             { status: 500 }

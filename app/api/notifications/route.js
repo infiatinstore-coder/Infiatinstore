@@ -20,12 +20,12 @@ export async function GET(request) {
         const offset = parseInt(searchParams.get('offset')) || 0;
 
         const notifications = await notificationService.getNotifications(
-            auth.user.id,
+            auth.users.id,
             limit,
             offset
         );
 
-        const unreadCount = await notificationService.getUnreadCount(auth.user.id);
+        const unreadCount = await notificationService.getUnreadCount(auth.users.id);
 
         return NextResponse.json({
             success: true,
@@ -51,7 +51,7 @@ export async function POST(request) {
         const data = await request.json();
 
         const notification = await notificationService.createNotification({
-            user_id: data.userId || auth.user.id,
+            user_id: data.userId || auth.users.id,
             ...data
         });
 

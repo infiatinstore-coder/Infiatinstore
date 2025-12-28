@@ -10,7 +10,7 @@ export async function POST(request, { params }) {
     try {
         // Verify admin auth
         const auth = await verifyAuth(request);
-        if (!auth.success || !['ADMIN', 'SUPER_ADMIN'].includes(auth.user.role)) {
+        if (!auth.success || !['ADMIN', 'SUPER_ADMIN'].includes(auth.users.role)) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
@@ -32,10 +32,10 @@ export async function POST(request, { params }) {
                 name: `${original.name} (Copy)`,
                 slug: `${original.slug}-copy-${Date.now()}`,
                 description: original.description,
-                base_price: original.basePrice,
-                sale_price: original.salePrice,
+                base_price: original.base_price,
+                sale_price: original.sale_price,
                 stock: original.stock,
-                category: original.category,
+                category: original.categories,
                 images: original.images,
                 weight: original.weight,
                 status: 'INACTIVE', // Set to inactive by default
@@ -56,7 +56,7 @@ export async function POST(request, { params }) {
         return NextResponse.json({
             success: true,
             message: 'Product duplicated successfully',
-            product: duplicate,
+            products: duplicate,
         });
 
     } catch (error) {

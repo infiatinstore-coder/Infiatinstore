@@ -21,14 +21,14 @@ export async function GET(request, { params }) {
             include: {
                 items: {
                     include: {
-                        product: {
+                        products: {
                             select: { name: true, images: true, slug: true },
                         },
                     },
                 },
-                address: true,
-                payment: true,
-                shipment: true,
+                addresses: true,
+                payments: true,
+                shipments: true,
                 refund: true,
             },
         });
@@ -82,7 +82,7 @@ export async function PUT(request, { params }) {
                 });
 
                 // Update payment status
-                await tx.payment.updateMany({
+                await tx.payments.updateMany({
                     where: { order_id: id },
                     data: { status: 'FAILED' },
                 });

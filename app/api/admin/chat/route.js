@@ -10,7 +10,7 @@ import { verifyAuth } from '@/lib/auth';
 export async function GET(request) {
     try {
         const auth = await verifyAuth(request);
-        if (!auth.success || !['ADMIN', 'SUPER_ADMIN'].includes(auth.user.role)) {
+        if (!auth.success || !['ADMIN', 'SUPER_ADMIN'].includes(auth.users.role)) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
@@ -23,7 +23,7 @@ export async function GET(request) {
                 where: { userId },
                 orderBy: { created_at: 'asc' },
                 include: {
-                    user: {
+                    users: {
                         select: { name: true, email: true, avatar_url: true },
                     },
                 },
@@ -35,9 +35,9 @@ export async function GET(request) {
                     message: m.message,
                     image_url: m.imageUrl,
                     is_admin: m.isAdmin,
-                    created_at: m.createdAt,
+                    created_at: m.created_at,
                 })),
-                user: messages[0]?.user || null,
+                users: messages[0]?.user || null,
             });
         }
 
@@ -76,7 +76,7 @@ export async function GET(request) {
 export async function POST(request) {
     try {
         const auth = await verifyAuth(request);
-        if (!auth.success || !['ADMIN', 'SUPER_ADMIN'].includes(auth.user.role)) {
+        if (!auth.success || !['ADMIN', 'SUPER_ADMIN'].includes(auth.users.role)) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
@@ -106,7 +106,7 @@ export async function POST(request) {
                 id: chatMessage.id,
                 message: chatMessage.message,
                 is_admin: true,
-                created_at: chatMessage.createdAt,
+                created_at: chatMessage.created_at,
             },
         });
     } catch (error) {

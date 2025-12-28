@@ -118,7 +118,7 @@ export async function PUT(request) {
                 label: label || existing.label,
                 recipient_name: recipientName || existing.recipientName,
                 phone: phone || existing.phone,
-                full_address: fullAddress || existing.fullAddress,
+                full_addresses: fullAddress || existing.fullAddress,
                 province: province !== undefined ? province : existing.province,
                 city: city || existing.city,
                 district: district !== undefined ? district : existing.district,

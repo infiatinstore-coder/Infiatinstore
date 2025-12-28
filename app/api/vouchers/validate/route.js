@@ -35,7 +35,7 @@ export async function POST(request) {
 
         // Check date validity
         const now = new Date();
-        if (now < voucher.validFrom || now > voucher.validUntil) {
+        if (now < voucher.valid_from || now > voucher.valid_until) {
             return NextResponse.json({
                 valid: false,
                 error: 'Voucher sudah kadaluarsa'
@@ -43,7 +43,7 @@ export async function POST(request) {
         }
 
         // Check usage limit
-        if (voucher.usageLimit && voucher.usedCount >= voucher.usageLimit) {
+        if (voucher.usage_limit && voucher.used_count >= voucher.usage_limit) {
             return NextResponse.json({
                 valid: false,
                 error: 'Kuota voucher sudah habis'
@@ -51,10 +51,10 @@ export async function POST(request) {
         }
 
         // Check minimum purchase
-        if (subtotal && subtotal < Number(voucher.minPurchase)) {
+        if (subtotal && subtotal < Number(voucher.min_purchase)) {
             return NextResponse.json({
                 valid: false,
-                error: `Minimum belanja Rp${Number(voucher.minPurchase).toLocaleString('id-ID')}`
+                error: `Minimum belanja Rp${Number(voucher.min_purchase).toLocaleString('id-ID')}`
             });
         }
 
@@ -63,8 +63,8 @@ export async function POST(request) {
         if (subtotal) {
             if (voucher.type === 'PERCENTAGE') {
                 discount = subtotal * (Number(voucher.value) / 100);
-                if (voucher.maxDiscount) {
-                    discount = Math.min(discount, Number(voucher.maxDiscount));
+                if (voucher.max_discount) {
+                    discount = Math.min(discount, Number(voucher.max_discount));
                 }
             } else if (voucher.type === 'FIXED_AMOUNT') {
                 discount = Number(voucher.value);
@@ -75,12 +75,12 @@ export async function POST(request) {
 
         return NextResponse.json({
             valid: true,
-            voucher: {
+            vouchers: {
                 code: voucher.code,
                 type: voucher.type,
                 value: voucher.value,
-                max_discount: voucher.maxDiscount,
-                min_purchase: voucher.minPurchase,
+                max_discount: voucher.max_discount,
+                min_purchase: voucher.min_purchase,
             },
             discount: Math.round(discount),
             message: 'Voucher berhasil diterapkan!',

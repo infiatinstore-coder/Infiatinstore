@@ -21,7 +21,7 @@ export const POST = requireAuth(async function POST(request, context) {
 
         // Check if user is admin for certain folders
         const adminFolders = ['products', 'categories'];
-        if (adminFolders.includes(folder) && context.user.role !== 'ADMIN' && context.user.role !== 'SUPER_ADMIN') {
+        if (adminFolders.includes(folder) && context.users.role !== 'ADMIN' && context.users.role !== 'SUPER_ADMIN') {
             return NextResponse.json(
                 { error: 'Unauthorized' },
                 { status: 403 }

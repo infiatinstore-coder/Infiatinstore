@@ -1,9 +1,20 @@
+'use client';
+
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Shield, ArrowLeft, Lock, Eye, Database, UserX, Cookie, Mail, MessageCircle } from 'lucide-react';
 import { Header, Footer } from '@/components/layout';
 import { CartDrawer } from '@/components/cart';
 
 export default function PrivacyPage() {
+    const [settings, setSettings] = useState({});
+
+    useEffect(() => {
+        fetch('/api/settings')
+            .then(res => res.json())
+            .then(data => setSettings(data))
+            .catch(err => console.error('Failed to load settings:', err));
+    }, []);
     return (
         <>
             <Header />
@@ -149,7 +160,7 @@ export default function PrivacyPage() {
                                 <li>Meminta portabilitas data</li>
                             </ul>
                             <p className="text-neutral-600 leading-relaxed mt-3">
-                                Untuk menggunakan hak-hak ini, silakan hubungi kami di privacy@infiatin.store
+                                Untuk menggunakan hak-hak ini, silakan hubungi kami di {settings.contact_email_privacy || 'privacy@infiatin.store'}
                             </p>
                         </section>
 
@@ -175,11 +186,11 @@ export default function PrivacyPage() {
                             <div className="bg-neutral-50 rounded-xl p-6 space-y-3">
                                 <p className="flex items-center gap-2 text-neutral-700">
                                     <Mail className="w-5 h-5 text-primary-500" />
-                                    Email: privacy@infiatin.store
+                                    Email: {settings.contact_email_privacy || 'privacy@infiatin.store'}
                                 </p>
                                 <p className="flex items-center gap-2 text-neutral-700">
                                     <MessageCircle className="w-5 h-5 text-primary-500" />
-                                    WhatsApp: 0851-1945-7138
+                                    WhatsApp: {settings.contact_whatsapp || '0851-1945-7138'}
                                 </p>
                             </div>
                         </section>

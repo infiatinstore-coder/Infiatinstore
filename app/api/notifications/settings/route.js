@@ -15,7 +15,7 @@ export async function GET(request) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
-        const preferences = await notificationService.getUserPreferences(auth.user.id);
+        const preferences = await notificationService.getUserPreferences(auth.users.id);
 
         return NextResponse.json({
             success: true,
@@ -40,7 +40,7 @@ export async function PATCH(request) {
         const updates = await request.json();
 
         const preferences = await notificationService.updatePreferences(
-            auth.user.id,
+            auth.users.id,
             updates
         );
 

@@ -105,7 +105,7 @@ export const GET = asyncHandler(async function GET(request) {
                 skip: (page - 1) * limit,
                 take: limit,
                 include: {
-                    category: {
+                    categories: {
                         select: {
                             id: true,
                             name: true,
@@ -140,13 +140,13 @@ export const GET = asyncHandler(async function GET(request) {
                     name: product.name,
                     slug: product.slug,
                     images: product.images,
-                    base_price: Number(product.basePrice),
-                    sale_price: product.salePrice ? Number(product.salePrice) : null,
+                    base_price: Number(product.base_price),
+                    sale_price: product.sale_price ? Number(product.sale_price) : null,
                     stock: product.stock,
-                    category: product.category,
+                    category: product.categories,
                     averageRating: avgRating._avg.rating || 0,
                     reviewCount: product._count.reviews,
-                    is_featured: product.isFeatured,
+                    is_featured: product.is_featured,
                 };
             })
         );

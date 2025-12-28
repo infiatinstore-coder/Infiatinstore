@@ -14,7 +14,7 @@ export async function GET(request) {
     try {
         // Verify admin auth
         const auth = await verifyAuth(request);
-        if (!auth.success || !['ADMIN', 'SUPER_ADMIN'].includes(auth.user.role)) {
+        if (!auth.success || !['ADMIN', 'SUPER_ADMIN'].includes(auth.users.role)) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
@@ -32,7 +32,7 @@ export async function GET(request) {
             prisma.activity_logs.findMany({
                 where,
                 include: {
-                    user: {
+                    users: {
                         select: { name: true, email: true, role: true },
                     },
                 },
@@ -78,12 +78,12 @@ export async function POST(request) {
 
         const log = await prisma.activity_logs.create({
             data: {
-                user_id: auth.user.id,
+                user_id: auth.users.id,
                 action,
                 entity,
                 entityId,
                 details,
-                ip_address: request.headers.get('x-forwarded-for') || 'unknown',
+                ip_addresses: request.headers.get('x-forwarded-for') || 'unknown',
                 user_agent: request.headers.get('user-agent') || 'unknown',
             },
         });

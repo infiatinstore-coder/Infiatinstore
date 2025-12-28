@@ -30,7 +30,7 @@ export async function GET(request, { params }) {
             // 1. Related products (same category)
             prisma.products.findMany({
                 where: {
-                    category_id: product.categoryId,
+                    category_id: product.categoriesId,
                     id: { not: product.id },
                     status: 'ACTIVE',
                 },
@@ -77,8 +77,8 @@ export async function GET(request, { params }) {
                     OR: [
                         {
                             base_price: {
-                                gte: Number(product.basePrice) * 0.7,
-                                lte: Number(product.basePrice) * 1.3,
+                                gte: Number(product.base_price) * 0.7,
+                                lte: Number(product.base_price) * 1.3,
                             },
                         },
                     ],
@@ -104,8 +104,8 @@ export async function GET(request, { params }) {
             name: p.name,
             slug: p.slug,
             image: Array.isArray(p.images) ? p.images[0] : p.images,
-            base_price: Number(p.base_price || p.basePrice),
-            sale_price: p.sale_price || p.salePrice ? Number(p.sale_price || p.salePrice) : null,
+            base_price: Number(p.base_price || p.base_price),
+            sale_price: p.sale_price || p.sale_price ? Number(p.sale_price || p.sale_price) : null,
         });
 
         return NextResponse.json({

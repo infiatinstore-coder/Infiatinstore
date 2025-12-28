@@ -11,7 +11,7 @@ export async function GET(request) {
     try {
         // Verify admin access
         const auth = await verifyAuth(request);
-        if (!auth.success || !['ADMIN', 'SUPER_ADMIN'].includes(auth.user.role)) {
+        if (!auth.success || !['ADMIN', 'SUPER_ADMIN'].includes(auth.users.role)) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
@@ -73,7 +73,7 @@ export async function GET(request) {
             // Products sold this month
             prisma.order_items.aggregate({
                 where: {
-                    order: {
+                    orders: {
                         status: { in: ['PAID', 'PROCESSING', 'SHIPPED', 'DELIVERED', 'COMPLETED'] },
                         created_at: { gte: startOfMonth },
                     },
@@ -83,7 +83,7 @@ export async function GET(request) {
             // Products sold last month
             prisma.order_items.aggregate({
                 where: {
-                    order: {
+                    orders: {
                         status: { in: ['PAID', 'PROCESSING', 'SHIPPED', 'DELIVERED', 'COMPLETED'] },
                         created_at: { gte: startOfLastMonth, lte: endOfLastMonth },
                     },
@@ -156,7 +156,7 @@ export async function GET(request) {
             orderBy: { created_at: 'desc' },
             take: 5,
             include: {
-                user: {
+                users: {
                     select: { name: true },
                 },
             },
@@ -167,7 +167,7 @@ export async function GET(request) {
             customer: order.user?.name || 'Guest',
             total: Number(order.total),
             status: order.status,
-            date: getRelativeTime(order.createdAt),
+            date: getRelativeTime(order.created_at),
         }));
 
         // Get pending refunds count

@@ -21,7 +21,7 @@ export const POST = requireAuth(async function POST(request, context) {
 
         // Check if already registered
         const existing = await prisma.affiliates.findUnique({
-            where: { user_id: context.user.id }
+            where: { user_id: context.users.id }
         });
 
         if (existing) {
@@ -32,12 +32,12 @@ export const POST = requireAuth(async function POST(request, context) {
         }
 
         // Generate unique referral code
-        const referralCode = `REF${context.user.id.substring(0, 8).toUpperCase()}`;
+        const referralCode = `REF${context.users.id.substring(0, 8).toUpperCase()}`;
 
         // Create affiliate record
         const affiliate = await prisma.affiliates.create({
             data: {
-                user_id: context.user.id,
+                user_id: context.users.id,
                 referralCode,
                 bankAccount,
                 tier: 'BRONZE',
@@ -47,7 +47,7 @@ export const POST = requireAuth(async function POST(request, context) {
 
         return NextResponse.json({
             success: true,
-            affiliate: {
+            affiliates: {
                 id: affiliate.id,
                 referral_code: affiliate.referralCode,
                 tier: affiliate.tier,
@@ -71,7 +71,7 @@ export const POST = requireAuth(async function POST(request, context) {
 export const GET = requireAuth(async function GET(request, context) {
     try {
         const affiliate = await prisma.affiliates.findUnique({
-            where: { user_id: context.user.id },
+            where: { user_id: context.users.id },
             include: {
                 _count: {
                     select: {
@@ -90,7 +90,7 @@ export const GET = requireAuth(async function GET(request, context) {
 
         return NextResponse.json({
             registered: true,
-            affiliate: {
+            affiliates: {
                 id: affiliate.id,
                 referral_code: affiliate.referralCode,
                 tier: affiliate.tier,

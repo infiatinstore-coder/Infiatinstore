@@ -12,7 +12,7 @@ import { createExcelFromJSON, generateExcelBuffer } from '@/lib/excel-helpers';
 
 export const GET = requireAuth(async function GET(request, context) {
     try {
-        if (context.user.role !== 'ADMIN' && context.user.role !== 'SUPER_ADMIN') {
+        if (context.users.role !== 'ADMIN' && context.users.role !== 'SUPER_ADMIN') {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
         }
 
@@ -22,7 +22,7 @@ export const GET = requireAuth(async function GET(request, context) {
 
         const where = {};
         if (startDate && endDate) {
-            where.createdAt = {
+            where.created_at = {
                 gte: new Date(startDate),
                 lte: new Date(endDate)
             };
@@ -31,15 +31,15 @@ export const GET = requireAuth(async function GET(request, context) {
         const orders = await prisma.orders.findMany({
             where,
             include: {
-                user: { select: { name: true, email: true } },
-                items: { include: { product: { select: { name: true } } } }
+                users: { select: { name: true, email: true } },
+                items: { include: { products: { select: { name: true } } } }
             },
             orderBy: { created_at: 'desc' }
         });
 
         const data = orders.map(o => ({
             orderNumber: o.orderNumber,
-            date: o.createdAt.toISOString(),
+            date: o.created_at.toISOString(),
             customer: o.user?.name || 'Guest',
             email: o.user?.email || o.guestEmail || '',
             items: o.items.map(i => i.product.name).join(', '),

@@ -41,7 +41,7 @@ export async function POST(request) {
         const order = await prisma.orders.findUnique({
             where: { id: orderId },
             include: {
-                user: {
+                users: {
                     select: {
                         id: true,
                         name: true,
@@ -49,18 +49,18 @@ export async function POST(request) {
                         phone: true,
                     },
                 },
-                address: {
+                addresses: {
                     select: {
                         recipient_name: true,
                         phone: true,
-                        full_address: true,
+                        full_addresses: true,
                         city: true,
                         postal_code: true,
                     },
                 },
                 items: {
                     include: {
-                        product: {
+                        products: {
                             select: {
                                 id: true,
                                 name: true,
@@ -79,7 +79,7 @@ export async function POST(request) {
         }
 
         // Verify order ownership
-        if (order.userId !== transactCheck.user.id) {
+        if (order.user_id !== transactCheck.users.id) {
             return NextResponse.json(
                 { error: 'Unauthorized access to order' },
                 { status: 403 }
@@ -106,7 +106,7 @@ export async function POST(request) {
             if (item.variantId) {
                 const variant = await prisma.product_variants.findUnique({
                     where: { id: item.variantId },
-                    include: { product: true }
+                    include: { products: true }
                 });
 
                 if (!variant) {

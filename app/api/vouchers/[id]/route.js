@@ -19,15 +19,15 @@ export async function GET(request, { params }) {
 
         return NextResponse.json({
             success: true,
-            voucher: {
+            vouchers: {
                 ...voucher,
                 value: Number(voucher.value),
-                min_purchase: Number(voucher.minPurchase || 0),
-                max_discount: voucher.maxDiscount ? Number(voucher.maxDiscount) : null,
+                min_purchase: Number(voucher.min_purchase || 0),
+                max_discount: voucher.max_discount ? Number(voucher.max_discount) : null,
             },
         });
     } catch (error) {
-        console.error('Error fetching voucher:', error);
+        console.error('Error fetching vouchers:', error);
         return NextResponse.json(
             { success: false, error: error.message },
             { status: 500 }
@@ -62,7 +62,7 @@ export async function PATCH(request, { params }) {
             voucher,
         });
     } catch (error) {
-        console.error('Error updating voucher:', error);
+        console.error('Error updating vouchers:', error);
         return NextResponse.json(
             { success: false, error: error.message },
             { status: 500 }
@@ -84,7 +84,7 @@ export async function DELETE(request, { params }) {
             message: 'Voucher berhasil dihapus',
         });
     } catch (error) {
-        console.error('Error deleting voucher:', error);
+        console.error('Error deleting vouchers:', error);
         return NextResponse.json(
             { success: false, error: error.message },
             { status: 500 }

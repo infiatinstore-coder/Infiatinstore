@@ -20,7 +20,7 @@ import { sendEmail } from '@/lib/email';
 export const POST = requireAuth(async function POST(request, context) {
     try {
         // Check admin permission
-        if (context.user.role !== 'ADMIN' && context.user.role !== 'SUPER_ADMIN') {
+        if (context.users.role !== 'ADMIN' && context.users.role !== 'SUPER_ADMIN') {
             return NextResponse.json(
                 { error: 'Unauthorized. Admin access required.' },
                 { status: 403 }
@@ -116,7 +116,7 @@ export const POST = requireAuth(async function POST(request, context) {
                 status: 'SENDING',
                 productId,
                 voucherCode,
-                sentBy: context.user.id
+                sentBy: context.users.id
             }
         });
 
@@ -226,7 +226,7 @@ async function sendEmailsInBackground(campaignId, recipients, subject, content, 
 export const GET = requireAuth(async function GET(request, context) {
     try {
         // Check admin permission
-        if (context.user.role !== 'ADMIN' && context.user.role !== 'SUPER_ADMIN') {
+        if (context.users.role !== 'ADMIN' && context.users.role !== 'SUPER_ADMIN') {
             return NextResponse.json(
                 { error: 'Unauthorized. Admin access required.' },
                 { status: 403 }
@@ -253,7 +253,7 @@ export const GET = requireAuth(async function GET(request, context) {
                 failedCount: c.failedCount,
                 status: c.status,
                 sentBy: c.sentByUser,
-                created_at: c.createdAt,
+                created_at: c.created_at,
                 sent_at: c.sentAt
             }))
         });

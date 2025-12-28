@@ -9,7 +9,7 @@ export async function GET() {
                 is_active: true,
             },
             orderBy: {
-                order: 'asc',
+                orders: 'asc',
             },
         });
 

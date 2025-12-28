@@ -46,7 +46,7 @@ export async function DELETE(request) {
 
         // Get user
         const user = await prisma.users.findUnique({
-            where: { id: auth.user.id },
+            where: { id: auth.users.id },
             include: {
                 orders: {
                     where: {
@@ -64,7 +64,7 @@ export async function DELETE(request) {
         }
 
         // Verify password
-        const isValidPassword = await bcrypt.compare(password, user.passwordHash);
+        const isValidPassword = await bcrypt.compare(password, user.password_hash);
         if (!isValidPassword) {
             return NextResponse.json(
                 { error: 'Password tidak sesuai' },
@@ -117,7 +117,7 @@ export async function DELETE(request) {
             where: { user_id: user.id }
         });
 
-        console.log('✅ Account deleted (soft) for user:', user.email);
+        console.log('✅ Account deleted (soft) for users:', user.email);
 
         return NextResponse.json({
             success: true,

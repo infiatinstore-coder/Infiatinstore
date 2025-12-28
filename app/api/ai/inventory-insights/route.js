@@ -12,7 +12,7 @@ export const dynamic = 'force-dynamic';
 export const GET = requireAuth(async function GET(request, context) {
     try {
         // Check if user is admin
-        if (context.user.role !== 'ADMIN' && context.user.role !== 'SUPER_ADMIN') {
+        if (context.users.role !== 'ADMIN' && context.users.role !== 'SUPER_ADMIN') {
             return NextResponse.json(
                 { error: 'Admin access required' },
                 { status: 403 }

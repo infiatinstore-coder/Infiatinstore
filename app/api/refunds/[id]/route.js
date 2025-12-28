@@ -14,7 +14,7 @@ export async function PATCH(request, { params }) {
     try {
         const auth = await verifyAuth(request);
 
-        if (!auth.success || !['ADMIN', 'SUPER_ADMIN'].includes(auth.user.role)) {
+        if (!auth.success || !['ADMIN', 'SUPER_ADMIN'].includes(auth.users.role)) {
             return ApiResponse.error('Admin access  required', 403);
         }
 
@@ -26,7 +26,7 @@ export async function PATCH(request, { params }) {
         const refund = await prisma.refund_requests.findUnique({
             where: { id },
             include: {
-                order: {
+                orders: {
                     include: {
                         items: true
                     }
@@ -52,7 +52,7 @@ export async function PATCH(request, { params }) {
                     where: { id },
                     data: {
                         status: 'APPROVED',
-                        resolved_by: auth.user.id,
+                        resolved_by: auth.users.id,
                         resolved_at: new Date(),
                         adminNotes
                     }
@@ -62,7 +62,7 @@ export async function PATCH(request, { params }) {
                 await updateOrderStatus(
                     refund.orderId,
                     'REFUNDED',
-                    auth.user.id,
+                    auth.users.id,
                     'Refund approved by admin'
                 );
 
@@ -75,7 +75,7 @@ export async function PATCH(request, { params }) {
                 where: { id },
                 data: {
                     status: 'REJECTED',
-                    resolved_by: auth.user.id,
+                    resolved_by: auth.users.id,
                     resolved_at: new Date(),
                     rejected_reason: rejectedReason || adminNotes,
                     adminNotes

@@ -9,7 +9,7 @@ import { requireAuth } from '@/lib/auth';
 export const GET = requireAuth(async function GET(request, context) {
     try {
         // Only admins can access
-        if (context.user.role !== 'ADMIN' && context.user.role !== 'SUPER_ADMIN') {
+        if (context.users.role !== 'ADMIN' && context.users.role !== 'SUPER_ADMIN') {
             return NextResponse.json(
                 { error: 'Unauthorized' },
                 { status: 403 }
@@ -64,7 +64,7 @@ export const GET = requireAuth(async function GET(request, context) {
                 name: product?.name || 'Unknown Product',
                 slug: product?.slug,
                 image: product?.images?.[0] || null,
-                price: Number(product?.salePrice || product?.basePrice || 0),
+                price: Number(product?.sale_price || product?.base_price || 0),
                 stock: product?.stock || 0,
                 totalSold: item._sum.quantity || 0,
                 totalRevenue: Number(item._sum.subtotal || 0),

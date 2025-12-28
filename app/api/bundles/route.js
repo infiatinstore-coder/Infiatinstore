@@ -41,7 +41,7 @@ export async function GET(request) {
             include: {
                 products: {
                     include: {
-                        product: {
+                        products: {
                             select: {
                                 id: true,
                                 name: true,
@@ -65,7 +65,7 @@ export async function GET(request) {
         const bundlesWithPricing = bundles.map((bundle) => {
             // Calculate original total price
             const originalTotal = bundle.products.reduce((sum, bp) => {
-                const price = Number(bp.product.salePrice || bp.product.basePrice);
+                const price = Number(bp.product.sale_price || bp.product.base_price);
                 return sum + price * bp.quantity;
             }, 0);
 
@@ -99,7 +99,7 @@ export async function GET(request) {
                 products: bundle.products.map((bp) => ({
                     ...bp.product,
                     quantity: bp.quantity,
-                    price: Number(bp.product.salePrice || bp.product.basePrice),
+                    price: Number(bp.product.sale_price || bp.product.base_price),
                 })),
                 pricing: {
                     originalTotal: Math.round(originalTotal),

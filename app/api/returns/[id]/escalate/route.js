@@ -20,7 +20,7 @@ export async function POST(request, { params }) {
         const data = await request.json();
 
         const result = await returnManager.escalateToAdmin(id, {
-            escalatedBy: auth.user.id,
+            escalatedBy: auth.users.id,
             ...data
         });
 

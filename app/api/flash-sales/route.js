@@ -37,7 +37,7 @@ export async function GET(request) {
             include: {
                 products: {
                     include: {
-                        product: {
+                        products: {
                             select: {
                                 id: true,
                                 name: true,
@@ -66,16 +66,16 @@ export async function GET(request) {
             const isExpired = timeRemaining <= 0;
 
             const productsWithDiscount = sale.products.map((fp) => {
-                const originalPrice = Number(fp.product.salePrice || fp.product.basePrice);
+                const originalPrice = Number(fp.product.sale_price || fp.product.base_price);
                 const discountPercentage = Math.round(
-                    ((originalPrice - Number(fp.salePrice)) / originalPrice) * 100
+                    ((originalPrice - Number(fp.sale_price)) / originalPrice) * 100
                 );
                 const stockRemaining = fp.stockLimit - fp.soldCount;
                 const stockPercentage = Math.round((stockRemaining / fp.stockLimit) * 100);
 
                 return {
                     ...fp.product,
-                    flashSalePrice: Number(fp.salePrice),
+                    flashSalePrice: Number(fp.sale_price),
                     originalPrice,
                     discountPercentage,
                     stock_limit: fp.stockLimit,

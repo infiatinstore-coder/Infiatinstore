@@ -65,13 +65,13 @@ export async function GET(request) {
 
         if (user) {
             // Update googleId if not present (e.g. registered via email before)
-            if (!user.googleId) {
+            if (!user.google_id) {
                 user = await prisma.users.update({
                     where: { id: user.id },
                     data: {
                         google_id: userData.id,
                         status: user.status === 'UNVERIFIED' ? 'ACTIVE' : user.status, // Auto-verify if email matches Google
-                        avatar_url: user.avatarUrl || userData.picture
+                        avatar_url: user.avatar_url || userData.picture
                     }
                 });
             }

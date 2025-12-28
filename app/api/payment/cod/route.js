@@ -45,10 +45,10 @@ export async function POST(request) {
         const order = await prisma.orders.findUnique({
             where: { id: orderId },
             include: {
-                user: true,
+                users: true,
                 items: {
                     include: {
-                        product: true
+                        products: true
                     }
                 }
             }
@@ -62,7 +62,7 @@ export async function POST(request) {
         }
 
         // Verify ownership
-        if (order.userId !== transactCheck.user.id) {
+        if (order.user_id !== transactCheck.users.id) {
             return NextResponse.json(
                 { error: 'Unauthorized' },
                 { status: 403 }
@@ -85,7 +85,7 @@ export async function POST(request) {
             if (item.variantId) {
                 const variant = await prisma.product_variants.findUnique({
                     where: { id: item.variantId },
-                    include: { product: true }
+                    include: { products: true }
                 });
 
                 if (!variant) {
@@ -152,13 +152,13 @@ export async function POST(request) {
         return NextResponse.json({
             success: true,
             message: 'COD order confirmed. Payment will be collected upon delivery.',
-            payment: {
+            payments: {
                 id: payment.id,
                 method: 'COD',
                 amount: payment.amount,
                 status: payment.status
             },
-            order: {
+            orders: {
                 id: order.id,
                 orderNumber: order.orderNumber,
                 status: 'PROCESSING'

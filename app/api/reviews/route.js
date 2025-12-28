@@ -56,7 +56,7 @@ export async function POST(request) {
         // const hasPurchased = await prisma.order_items.findFirst({
         //   where: {
         //     productId,
-        //     order: {
+        //     orders: {
         //       user_id: user.userId,
         //       status: 'COMPLETED',
         //     },
@@ -79,7 +79,7 @@ export async function POST(request) {
                 status: 'APPROVED', // Auto-approve for now, or 'PENDING' for moderation
             },
             include: {
-                user: {
+                users: {
                     select: {
                         id: true,
                         name: true,
@@ -131,7 +131,7 @@ export async function GET(request) {
                     status: 'APPROVED',
                 },
                 include: {
-                    user: {
+                    users: {
                         select: {
                             id: true,
                             name: true,

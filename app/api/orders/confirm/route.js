@@ -34,7 +34,7 @@ export async function POST(request) {
         // Get order
         const order = await prisma.orders.findUnique({
             where: { id: orderId },
-            include: { user: true }
+            include: { users: true }
         });
 
         if (!order) {
@@ -45,7 +45,7 @@ export async function POST(request) {
         }
 
         // Verify ownership
-        if (order.userId !== auth.user.id) {
+        if (order.user_id !== auth.users.id) {
             return NextResponse.json(
                 { error: 'Forbidden' },
                 { status: 403 }
@@ -78,7 +78,7 @@ export async function POST(request) {
         return NextResponse.json({
             success: true,
             message: 'Pesanan berhasil dikonfirmasi sebagai diterima',
-            order: updatedOrder
+            orders: updatedOrder
         });
 
     } catch (error) {

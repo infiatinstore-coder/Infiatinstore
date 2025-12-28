@@ -1,9 +1,20 @@
+'use client';
+
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { FileText, ArrowLeft, Shield, Lock, Eye, Database, Mail, MessageCircle } from 'lucide-react';
+import { FileText, ArrowLeft, ShoppingCart, CreditCard, Truck, RotateCcw, Mail, MessageCircle } from 'lucide-react';
 import { Header, Footer } from '@/components/layout';
 import { CartDrawer } from '@/components/cart';
 
 export default function TermsPage() {
+    const [settings, setSettings] = useState({});
+
+    useEffect(() => {
+        fetch('/api/settings')
+            .then(res => res.json())
+            .then(data => setSettings(data))
+            .catch(err => console.error('Failed to load settings:', err));
+    }, []);
     return (
         <>
             <Header />
@@ -122,11 +133,11 @@ export default function TermsPage() {
                             <div className="bg-neutral-50 rounded-xl p-6 space-y-3">
                                 <p className="flex items-center gap-2 text-neutral-700">
                                     <Mail className="w-5 h-5 text-primary-500" />
-                                    Email: legal@infiatin.store
+                                    Email: {settings.contact_email || 'support@infiatin.store'}
                                 </p>
                                 <p className="flex items-center gap-2 text-neutral-700">
                                     <MessageCircle className="w-5 h-5 text-primary-500" />
-                                    WhatsApp: 0851-1945-7138
+                                    WhatsApp: {settings.contact_whatsapp || '0851-1945-7138'}
                                 </p>
                             </div>
                         </section>

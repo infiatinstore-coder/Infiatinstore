@@ -47,7 +47,7 @@ export async function GET(request) {
                 id: { in: ids }
             },
             include: {
-                category: true,
+                categories: true,
                 variants: true,
                 reviews: {
                     select: {

@@ -19,7 +19,7 @@ export async function GET() {
             include: {
                 products: {
                     include: {
-                        product: {
+                        products: {
                             select: {
                                 id: true,
                                 name: true,
@@ -61,9 +61,9 @@ export async function GET() {
             name: fp.product.name,
             slug: fp.product.slug,
             image: fp.product.images?.[0] || null,
-            originalPrice: Number(fp.product.basePrice),
-            sale_price: Number(fp.salePrice),
-            discountPercent: Math.round((1 - Number(fp.salePrice) / Number(fp.product.basePrice)) * 100),
+            originalPrice: Number(fp.product.base_price),
+            sale_price: Number(fp.sale_price),
+            discountPercent: Math.round((1 - Number(fp.sale_price) / Number(fp.product.base_price)) * 100),
             stock_limit: fp.stockLimit,
             sold_count: fp.soldCount,
             stockLeft: fp.stockLimit - fp.soldCount,

@@ -15,7 +15,7 @@ const STREAK_BONUS_POINTS = 20; // Extra points on streak day
  */
 export const GET = requireAuth(async function GET(request, context) {
     try {
-        const userId = context.user.id;
+        const userId = context.users.id;
         const today = new Date();
         today.setHours(0, 0, 0, 0);
 
@@ -51,7 +51,7 @@ export const GET = requireAuth(async function GET(request, context) {
             nextDay.setDate(nextDay.getDate() + 1);
 
             const hasCheckin = recentCheckins.some(c => {
-                const checkinDate = new Date(c.createdAt);
+                const checkinDate = new Date(c.created_at);
                 return checkinDate >= checkDate && checkinDate < nextDay;
             });
 
@@ -87,7 +87,7 @@ export const GET = requireAuth(async function GET(request, context) {
  */
 export const POST = requireAuth(async function POST(request, context) {
     try {
-        const userId = context.user.id;
+        const userId = context.users.id;
         const today = new Date();
         today.setHours(0, 0, 0, 0);
 
@@ -146,7 +146,7 @@ export const POST = requireAuth(async function POST(request, context) {
                 nextDay.setDate(nextDay.getDate() + 1);
 
                 const hasCheckin = recentCheckins.some(c => {
-                    const cd = new Date(c.createdAt);
+                    const cd = new Date(c.created_at);
                     return cd >= checkDate && cd < nextDay;
                 });
 

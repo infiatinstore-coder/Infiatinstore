@@ -22,7 +22,7 @@ export const GET = requireAuth(async function GET(request, context) {
         const payment = await prisma.payments.findUnique({
             where: { orderId },
             include: {
-                order: {
+                orders: {
                     select: {
                         id: true,
                         orderNumber: true,
@@ -42,7 +42,7 @@ export const GET = requireAuth(async function GET(request, context) {
         }
 
         // Verify ownership
-        if (payment.order.userId !== context.user.id) {
+        if (payment.order.user_id !== context.users.id) {
             return NextResponse.json(
                 { error: 'Unauthorized' },
                 { status: 403 }
@@ -51,7 +51,7 @@ export const GET = requireAuth(async function GET(request, context) {
 
         return NextResponse.json({
             success: true,
-            payment: {
+            payments: {
                 id: payment.id,
                 orderNumber: payment.order.orderNumber,
                 amount: payment.amount,
@@ -59,7 +59,7 @@ export const GET = requireAuth(async function GET(request, context) {
                 payment_method: payment.paymentMethod,
                 paid_at: payment.paidAt,
                 expiresAt: payment.expiresAt,
-                created_at: payment.createdAt,
+                created_at: payment.created_at,
             },
         });
     } catch (error) {

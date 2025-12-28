@@ -29,18 +29,18 @@ export async function GET(request) {
 
         // Get or create user points
         let userPoints = await prisma.user_points.findUnique({
-            where: { user_id: auth.user.id },
+            where: { user_id: auth.users.id },
         });
 
         if (!userPoints) {
             userPoints = await prisma.user_points.create({
-                data: { user_id: auth.user.id, balance: 0, lifetime: 0 },
+                data: { user_id: auth.users.id, balance: 0, lifetime: 0 },
             });
         }
 
         // Get transaction history
         const transactions = await prisma.point_transactions.findMany({
-            where: { user_id: auth.user.id },
+            where: { user_id: auth.users.id },
             orderBy: { created_at: 'desc' },
             take: limit,
         });
@@ -51,7 +51,7 @@ export async function GET(request) {
 
         const todayCheckin = await prisma.point_transactions.findFirst({
             where: {
-                user_id: auth.user.id,
+                user_id: auth.users.id,
                 type: 'EARN_DAILY',
                 created_at: { gte: today },
             },
@@ -69,7 +69,7 @@ export async function GET(request) {
                 amount: t.amount,
                 balance: t.balance,
                 description: t.description,
-                created_at: t.createdAt,
+                created_at: t.created_at,
             })),
         });
     } catch (error) {
@@ -91,12 +91,12 @@ export async function POST(request) {
 
         // Get current balance
         let userPoints = await prisma.user_points.findUnique({
-            where: { user_id: auth.user.id },
+            where: { user_id: auth.users.id },
         });
 
         if (!userPoints) {
             userPoints = await prisma.user_points.create({
-                data: { user_id: auth.user.id, balance: 0, lifetime: 0 },
+                data: { user_id: auth.users.id, balance: 0, lifetime: 0 },
             });
         }
 
@@ -107,7 +107,7 @@ export async function POST(request) {
 
             const todayCheckin = await prisma.point_transactions.findFirst({
                 where: {
-                    user_id: auth.user.id,
+                    user_id: auth.users.id,
                     type: 'EARN_DAILY',
                     created_at: { gte: today },
                 },
@@ -126,7 +126,7 @@ export async function POST(request) {
             // Transaction
             await prisma.$transaction([
                 prisma.user_points.update({
-                    where: { user_id: auth.user.id },
+                    where: { user_id: auth.users.id },
                     data: {
                         balance: newBalance,
                         lifetime: { increment: earnAmount },
@@ -134,7 +134,7 @@ export async function POST(request) {
                 }),
                 prisma.point_transactions.create({
                     data: {
-                        user_id: auth.user.id,
+                        user_id: auth.users.id,
                         type: 'EARN_DAILY',
                         amount: earnAmount,
                         balance: newBalance,

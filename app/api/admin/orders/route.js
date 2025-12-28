@@ -15,7 +15,7 @@ export async function GET(request) {
     try {
         // Verify admin access
         const auth = await verifyAuth(request);
-        if (!auth.success || !['ADMIN', 'SUPER_ADMIN'].includes(auth.user.role)) {
+        if (!auth.success || !['ADMIN', 'SUPER_ADMIN'].includes(auth.users.role)) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
@@ -37,15 +37,15 @@ export async function GET(request) {
         if (search) {
             where.OR = [
                 { orderNumber: { contains: search, mode: 'insensitive' } },
-                { user: { name: { contains: search, mode: 'insensitive' } } },
-                { user: { email: { contains: search, mode: 'insensitive' } } },
+                { users: { name: { contains: search, mode: 'insensitive' } } },
+                { users: { email: { contains: search, mode: 'insensitive' } } },
             ];
         }
 
         if (dateFrom || dateTo) {
-            where.createdAt = {};
-            if (dateFrom) where.createdAt.gte = new Date(dateFrom);
-            if (dateTo) where.createdAt.lte = new Date(dateTo + 'T23:59:59');
+            where.created_at = {};
+            if (dateFrom) where.created_at.gte = new Date(dateFrom);
+            if (dateTo) where.created_at.lte = new Date(dateTo + 'T23:59:59');
         }
 
         // Get orders with pagination
@@ -56,23 +56,23 @@ export async function GET(request) {
                 skip: (page - 1) * limit,
                 take: limit,
                 include: {
-                    user: {
+                    users: {
                         select: { id: true, name: true, email: true, phone: true },
                     },
-                    address: {
+                    addresses: {
                         select: { city: true, province: true },
                     },
                     items: {
                         include: {
-                            product: {
+                            products: {
                                 select: { name: true, images: true },
                             },
                         },
                     },
-                    payment: {
+                    payments: {
                         select: { status: true, payment_method: true, paid_at: true },
                     },
-                    shipment: {
+                    shipments: {
                         select: { status: true, tracking_number: true, courier: true },
                     },
                 },
@@ -90,7 +90,7 @@ export async function GET(request) {
                 email: order.user?.email,
                 phone: order.user?.phone,
             },
-            location: order.address ? `${order.address.city}, ${order.address.province}` : '-',
+            location: order.address ? `${order.addresses.city}, ${order.addresses.province}` : '-',
             items: order.items.map(item => ({
                 name: item.productName,
                 quantity: item.quantity,
@@ -99,18 +99,18 @@ export async function GET(request) {
             })),
             item_count: order.items.reduce((sum, item) => sum + item.quantity, 0),
             subtotal: Number(order.subtotal),
-            shipping_cost: Number(order.shippingCost),
+            shipping_cost: Number(order.shipping_cost),
             discount: Number(order.discount),
             tax: Number(order.tax),
             total: Number(order.total),
             status: order.status,
             paymentStatus: order.payment?.status || 'PENDING',
-            payment_method: order.payment?.paymentMethod || order.paymentMethod,
+            payment_method: order.payment?.paymentMethod || order.payment_method,
             shippingStatus: order.shipment?.status || 'PENDING',
             tracking_number: order.shipment?.trackingNumber,
             courier: order.shipment?.courier || order.shippingMethod,
             notes: order.notes,
-            created_at: order.createdAt,
+            created_at: order.created_at,
             paid_at: order.payment?.paidAt,
         }));
 
@@ -137,7 +137,7 @@ export async function PATCH(request) {
     try {
         // Verify admin access
         const auth = await verifyAuth(request);
-        if (!auth.success || !['ADMIN', 'SUPER_ADMIN'].includes(auth.user.role)) {
+        if (!auth.success || !['ADMIN', 'SUPER_ADMIN'].includes(auth.users.role)) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
@@ -158,7 +158,7 @@ export async function PATCH(request) {
         const currentOrder = await prisma.orders.findUnique({
             where: { id: orderId },
             include: {
-                payment: true
+                payments: true
             }
         });
 
@@ -214,7 +214,7 @@ export async function PATCH(request) {
             await updateOrderStatus(
                 orderId,
                 status,
-                auth.user.id, // changedBy: admin user ID
+                auth.users.id, // changedBy: admin user ID
                 notes || `Admin update via dashboard`,
                 { tracking_number: trackingNumber || null }
             );
@@ -232,7 +232,7 @@ export async function PATCH(request) {
 
         // Update shipment if tracking number provided
         if (trackingNumber) {
-            await prisma.shipment.updateMany({
+            await prisma.shipments.updateMany({
                 where: { orderId },
                 data: {
                     trackingNumber,
@@ -244,12 +244,12 @@ export async function PATCH(request) {
 
         // Update shipment status based on order status
         if (status === 'SHIPPED') {
-            await prisma.shipment.updateMany({
+            await prisma.shipments.updateMany({
                 where: { orderId },
                 data: { status: 'IN_TRANSIT', shipped_at: new Date() },
             });
         } else if (status === 'DELIVERED') {
-            await prisma.shipment.updateMany({
+            await prisma.shipments.updateMany({
                 where: { orderId },
                 data: { status: 'DELIVERED', delivered_at: new Date() },
             });
@@ -258,7 +258,7 @@ export async function PATCH(request) {
         // Get updated order with details for notification
         const updatedOrder = await prisma.orders.findUnique({
             where: { id: orderId },
-            include: { user: true, address: true, shipment: true, items: true }
+            include: { users: true, addresses: true, shipments: true, items: true }
         });
 
         // Send WhatsApp notification when order is shipped
@@ -283,7 +283,7 @@ export async function PATCH(request) {
 
         return NextResponse.json({
             message: 'Status pesanan berhasil diupdate',
-            order: {
+            orders: {
                 id: updatedOrder.id,
                 orderNumber: updatedOrder.orderNumber,
                 status: updatedOrder.status,

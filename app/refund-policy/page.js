@@ -1,9 +1,20 @@
+'use client';
+
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { RotateCcw, ArrowLeft, Package, Truck, Ban, CheckCircle, Mail, MessageCircle } from 'lucide-react';
+import { RotateCcw, ArrowLeft, Package, CreditCard, Calendar, AlertCircle, Mail, MessageCircle, Ban, Truck, CheckCircle } from 'lucide-react';
 import { Header, Footer } from '@/components/layout';
 import { CartDrawer } from '@/components/cart';
 
 export default function RefundPolicyPage() {
+    const [settings, setSettings] = useState({});
+
+    useEffect(() => {
+        fetch('/api/settings')
+            .then(res => res.json())
+            .then(data => setSettings(data))
+            .catch(err => console.error('Failed to load settings:', err));
+    }, []);
     return (
         <>
             <Header />
@@ -118,8 +129,8 @@ export default function RefundPolicyPage() {
                                             Ajukan permintaan refund melalui:
                                         </p>
                                         <ul className="list-disc list-inside space-y-1 text-neutral-600 text-sm">
-                                            <li>Email: refund@infiatin.store</li>
-                                            <li>WhatsApp: 0851-1945-7138</li>
+                                            <li>Email: {settings.contact_email_refund || 'refund@infiatin.store'}</li>
+                                            <li>WhatsApp: {settings.contact_whatsapp || '0851-1945-7138'}</li>
                                             <li>Halaman &quot;Pesanan Saya&quot; di akun Anda</li>
                                         </ul>
                                     </div>
@@ -227,11 +238,11 @@ export default function RefundPolicyPage() {
                             <div className="bg-neutral-50 rounded-xl p-6 space-y-3">
                                 <p className="flex items-center gap-2 text-neutral-700">
                                     <Mail className="w-5 h-5 text-primary-500" />
-                                    Email: refund@infiatin.store
+                                    Email: {settings.contact_email_refund || 'refund@infiatin.store'}
                                 </p>
                                 <p className="flex items-center gap-2 text-neutral-700">
                                     <MessageCircle className="w-5 h-5 text-primary-500" />
-                                    WhatsApp: 0851-1945-7138
+                                    WhatsApp: {settings.contact_whatsapp || '0851-1945-7138'}
                                 </p>
                             </div>
                         </section>

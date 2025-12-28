@@ -21,7 +21,7 @@ const MAX_ROWS = 1000;
 export const POST = requireAuth(async function POST(request, context) {
     try {
         // Check admin permission
-        if (context.user.role !== 'ADMIN' && context.user.role !== 'SUPER_ADMIN') {
+        if (context.users.role !== 'ADMIN' && context.users.role !== 'SUPER_ADMIN') {
             return NextResponse.json(
                 { error: 'Unauthorized. Admin access required.' },
                 { status: 403 }
@@ -80,7 +80,7 @@ export const POST = requireAuth(async function POST(request, context) {
 
             try {
                 // Validate required fields
-                if (!row.name || !row.categoryId || !row.basePrice) {
+                if (!row.name || !row.categoryId || !row.base_price) {
                     throw new Error('Missing required fields: name, categoryId, basePrice');
                 }
 
@@ -95,8 +95,8 @@ export const POST = requireAuth(async function POST(request, context) {
                     slug: slug,
                     description: row.description || '',
                     category_id: row.categoryId,
-                    base_price: parseFloat(row.basePrice),
-                    sale_price: row.salePrice ? parseFloat(row.salePrice) : null,
+                    base_price: parseFloat(row.base_price),
+                    sale_price: row.sale_price ? parseFloat(row.sale_price) : null,
                     stock: parseInt(row.stock || 0),
                     weight: parseInt(row.weight || 0),
                     images: row.images ? JSON.parse(row.images) : [],

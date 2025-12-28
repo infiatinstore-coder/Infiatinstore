@@ -20,7 +20,7 @@ const REDEEM_OPTIONS = [
 export const POST = requireAuth(async function POST(request, context) {
     try {
         const { optionId } = await request.json();
-        const userId = context.user.id;
+        const userId = context.users.id;
 
         // Validate option
         const option = REDEEM_OPTIONS.find(o => o.id === optionId);
@@ -61,7 +61,7 @@ export const POST = requireAuth(async function POST(request, context) {
             });
 
             // Create voucher
-            const voucher = await tx.voucher.create({
+            const voucher = await tx.vouchers.create({
                 data: {
                     code: voucherCode,
                     name: option.name,
@@ -95,7 +95,7 @@ export const POST = requireAuth(async function POST(request, context) {
         return NextResponse.json({
             success: true,
             message: 'Berhasil menukar koin!',
-            voucher: {
+            vouchers: {
                 code: result.code,
                 name: result.name,
                 valid_until: result.validUntil,

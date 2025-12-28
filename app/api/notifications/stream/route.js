@@ -17,7 +17,7 @@ export async function GET(request) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const userId = auth.user.id;
+    const userId = auth.users.id;
 
     const encoder = new TextEncoder();
     const stream = new ReadableStream({

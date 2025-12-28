@@ -63,7 +63,7 @@ export async function POST(request) {
             },
         });
 
-        console.log('✅ Password reset successful for user:', user.email);
+        console.log('✅ Password reset successful for users:', user.email);
 
         return NextResponse.json({
             success: true,

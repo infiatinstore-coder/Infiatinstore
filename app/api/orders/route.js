@@ -22,7 +22,7 @@ async function getAuthUser(request) {
     if (!auth.success) {
         return null;
     }
-    return { user_id: auth.user.id, role: auth.user.role, email: auth.user.email };
+    return { user_id: auth.users.id, role: auth.users.role, email: auth.users.email };
 }
 
 // GET /api/orders - Get user's orders
@@ -50,13 +50,13 @@ export async function GET(request) {
                 include: {
                     items: {
                         include: {
-                            product: {
+                            products: {
                                 select: { name: true, images: true, slug: true },
                             },
                         },
                     },
-                    payment: true,
-                    shipment: true,
+                    payments: true,
+                    shipments: true,
                 },
             }),
             prisma.orders.count({ where }),
@@ -150,8 +150,8 @@ export async function POST(request) {
                 where,
                 include: {
                     items: true,
-                    payment: true,
-                    shipment: true
+                    payments: true,
+                    shipments: true
                 }
             });
 
@@ -160,7 +160,7 @@ export async function POST(request) {
                 return NextResponse.json({
                     message: 'Order sudah dibuat sebelumnya',
                     duplicate: true,
-                    order: existingOrder
+                    orders: existingOrder
                 }, { status: 200 }); // Return 200 to stop client retry
             }
         }
@@ -184,7 +184,7 @@ export async function POST(request) {
                 }
             } else if (shippingAddress) {
                 // Using manual address entry (for authenticated users without saved addresses)
-                if (!shippingAddress.city || !shippingAddress.address) {
+                if (!shippingAddress.city || !shippingAddress.addresses) {
                     return NextResponse.json({
                         error: 'Alamat pengiriman tidak lengkap'
                     }, { status: 400 });
@@ -194,7 +194,7 @@ export async function POST(request) {
                     id: null, // No database address
                     recipient_name: shippingAddress.recipientName,
                     phone: shippingAddress.phone,
-                    address: shippingAddress.address,
+                    addresses: shippingAddress.address,
                     city: shippingAddress.city,
                     province: shippingAddress.province || '',
                     postal_code: shippingAddress.postalCode || '',
@@ -205,7 +205,7 @@ export async function POST(request) {
             }
         } else {
             // Guest user - use guestAddress from request
-            if (!guestAddress || !guestAddress.city || !guestAddress.address) {
+            if (!guestAddress || !guestAddress.city || !guestAddress.addresses) {
                 return NextResponse.json({
                     error: 'Alamat pengiriman tidak lengkap'
                 }, { status: 400 });
@@ -215,7 +215,7 @@ export async function POST(request) {
                 id: null, // No database address for guest
                 recipient_name: guestName,
                 phone: guestPhone,
-                address: guestAddress.address,
+                addresses: guestAddress.address,
                 city: guestAddress.city,
                 province: guestAddress.province || '',
                 postal_code: guestAddress.postalCode || '',
@@ -260,7 +260,7 @@ export async function POST(request) {
                 return NextResponse.json({ error: `Stok ${product.name} tidak mencukupi` }, { status: 400 });
             }
 
-            let price = product.salePrice || product.basePrice;
+            let price = product.sale_price || product.base_price;
             let isFlashSale = false;
 
             // CHECK FLASH SALE - Will be reserved atomically in transaction
@@ -272,10 +272,10 @@ export async function POST(request) {
                     flashSaleProductId: fsItem.id,
                     product_id: product.id,
                     quantity: item.quantity,
-                    sale_price: fsItem.salePrice
+                    sale_price: fsItem.sale_price
                 });
 
-                price = fsItem.salePrice;
+                price = fsItem.sale_price;
                 isFlashSale = true;
             }
 
@@ -300,12 +300,12 @@ export async function POST(request) {
                 where: { code: voucherCode },
             });
             if (voucher && voucher.status === 'ACTIVE' &&
-                new Date() >= voucher.validFrom && new Date() <= voucher.validUntil &&
-                subtotal >= Number(voucher.minPurchase)) {
+                new Date() >= voucher.valid_from && new Date() <= voucher.valid_until &&
+                subtotal >= Number(voucher.min_purchase)) {
                 if (voucher.type === 'PERCENTAGE') {
                     discount = subtotal * (Number(voucher.value) / 100);
-                    if (voucher.maxDiscount) {
-                        discount = Math.min(discount, Number(voucher.maxDiscount));
+                    if (voucher.max_discount) {
+                        discount = Math.min(discount, Number(voucher.max_discount));
                     }
                 } else if (voucher.type === 'FIXED_AMOUNT') {
                     discount = Number(voucher.value);
@@ -357,12 +357,12 @@ export async function POST(request) {
                 data: orderData,
                 include: {
                     items: true,
-                    address: true,
+                    addresses: true,
                 },
             });
 
             // Create payment record with INIT status
-            await tx.payment.create({
+            await tx.payments.create({
                 data: {
                     order_id: newOrder.id,
                     paymentMethod,
@@ -373,7 +373,7 @@ export async function POST(request) {
             });
 
             // Create shipment record
-            await tx.shipment.create({
+            await tx.shipments.create({
                 data: {
                     order_id: newOrder.id,
                     courier: shippingMethod,
@@ -398,7 +398,7 @@ export async function POST(request) {
 
             // Update voucher usage
             if (voucherCode && discount > 0) {
-                await tx.voucher.update({
+                await tx.vouchers.update({
                     where: { code: voucherCode },
                     data: { used_count: { increment: 1 } },
                 });
@@ -419,7 +419,7 @@ export async function POST(request) {
 
         return NextResponse.json({
             message: 'Pesanan berhasil dibuat! Silakan lakukan pembayaran.',
-            order: {
+            orders: {
                 id: order.id,
                 orderNumber: order.orderNumber,
                 total: order.total,

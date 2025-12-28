@@ -37,7 +37,7 @@ export async function POST(request) {
         }
 
         // Check if already verified
-        if (user.emailVerifiedAt) {
+        if (user.email_verified_at) {
             return NextResponse.json(
                 { error: 'Email sudah terverifikasi' },
                 { status: 400 }

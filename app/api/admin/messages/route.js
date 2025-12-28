@@ -99,7 +99,7 @@ export const PUT = requireAdmin(async function PUT(request, context) {
         if (reply) {
             updateData.adminReply = reply;
             updateData.repliedAt = new Date();
-            updateData.repliedBy = context.user.id;
+            updateData.repliedBy = context.users.id;
         }
 
         const message = await prisma.contact_messages.update({

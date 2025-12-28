@@ -11,7 +11,7 @@ import { createTemplate, generateExcelBuffer } from '@/lib/excel-helpers';
 
 export const GET = requireAuth(async function GET(request, context) {
     try {
-        if (context.user.role !== 'ADMIN' && context.user.role !== 'SUPER_ADMIN') {
+        if (context.users.role !== 'ADMIN' && context.users.role !== 'SUPER_ADMIN') {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
         }
 

@@ -9,7 +9,7 @@ import { requireAuth } from '@/lib/auth';
 export const GET = requireAuth(async function GET(request, context) {
     try {
         // Only admins can access analytics
-        if (context.user.role !== 'ADMIN' && context.user.role !== 'SUPER_ADMIN') {
+        if (context.users.role !== 'ADMIN' && context.users.role !== 'SUPER_ADMIN') {
             return NextResponse.json(
                 { error: 'Unauthorized' },
                 { status: 403 }
@@ -61,7 +61,7 @@ export const GET = requireAuth(async function GET(request, context) {
 
         // Format data for charts
         const dailyRevenue = revenueData.map(item => ({
-            date: item.createdAt.toISOString().split('T')[0],
+            date: item.created_at.toISOString().split('T')[0],
             revenue: Number(item._sum.total || 0),
             orders: item._count.id,
         }));

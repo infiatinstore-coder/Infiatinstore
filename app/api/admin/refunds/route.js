@@ -24,9 +24,9 @@ export async function GET(request) {
 
         if (search) {
             where.OR = [
-                { order: { orderNumber: { contains: search, mode: 'insensitive' } } },
-                { user: { name: { contains: search, mode: 'insensitive' } } },
-                { user: { email: { contains: search, mode: 'insensitive' } } },
+                { orders: { orderNumber: { contains: search, mode: 'insensitive' } } },
+                { users: { name: { contains: search, mode: 'insensitive' } } },
+                { users: { email: { contains: search, mode: 'insensitive' } } },
             ];
         }
 
@@ -34,20 +34,20 @@ export async function GET(request) {
             prisma.refund_requests.findMany({
                 where,
                 include: {
-                    order: {
+                    orders: {
                         select: {
                             orderNumber: true,
                             total: true,
                             items: {
                                 select: {
-                                    product: { select: { name: true, images: true } },
+                                    products: { select: { name: true, images: true } },
                                     quantity: true,
                                     price: true,
                                 },
                             },
                         },
                     },
-                    user: {
+                    users: {
                         select: { name: true, email: true, phone: true },
                     },
                 },
@@ -116,7 +116,7 @@ export const PUT = requireAdmin(async function PUT(request, context) {
 
         const updateData = {
             status,
-            processed_by: context.user.id,
+            processed_by: context.users.id,
             processed_at: new Date(),
         };
 
@@ -135,8 +135,8 @@ export const PUT = requireAdmin(async function PUT(request, context) {
             where: { id },
             data: updateData,
             include: {
-                order: { select: { orderNumber: true } },
-                user: { select: { name: true, email: true } },
+                orders: { select: { orderNumber: true } },
+                users: { select: { name: true, email: true } },
             },
         });
 

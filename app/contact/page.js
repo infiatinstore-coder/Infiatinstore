@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, Mail, Phone, MapPin, MessageCircle, Send } from 'lucide-react';
 import { Header, Footer } from '@/components/layout';
@@ -10,6 +10,7 @@ import { showToast } from '@/components/ui/Toast';
 
 export default function ContactPage() {
     const [loading, setLoading] = useState(false);
+    const [settings, setSettings] = useState({});
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -17,6 +18,13 @@ export default function ContactPage() {
         subject: '',
         message: '',
     });
+
+    useEffect(() => {
+        fetch('/api/settings')
+            .then(res => res.json())
+            .then(data => setSettings(data))
+            .catch(err => console.error('Failed to load settings:', err));
+    }, []);
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -75,9 +83,7 @@ export default function ContactPage() {
                                 </div>
                                 <h3 className="font-semibold text-neutral-800 mb-2">Alamat</h3>
                                 <p className="text-neutral-600 text-sm">
-                                    GQ7C+793, Cikomprang, Desa Tegalsari<br />
-                                    Sidareja, Cilacap<br />
-                                    Jawa Tengah 53261
+                                    {settings.store_address || 'Loading...'}
                                 </p>
                             </div>
 
@@ -86,8 +92,8 @@ export default function ContactPage() {
                                     <Phone className="w-6 h-6 text-primary-500" />
                                 </div>
                                 <h3 className="font-semibold text-neutral-800 mb-2">WhatsApp</h3>
-                                <p className="text-neutral-600 text-sm mb-1">0851-1945-7138</p>
-                                <p className="text-neutral-600 text-sm">Buka Setiap Hari: 06.30 – 21.00 WIB</p>
+                                <p className="text-neutral-600 text-sm mb-1">{settings.contact_whatsapp || 'Loading...'}</p>
+                                <p className="text-neutral-600 text-sm">{settings.operating_hours || 'Buka Setiap Hari'}</p>
                             </div>
 
                             <div className="bg-white rounded-xl shadow-sm p-6">
@@ -97,12 +103,12 @@ export default function ContactPage() {
                                 <h3 className="font-semibold text-neutral-800 mb-2">WhatsApp</h3>
                                 <p className="text-neutral-600 text-sm mb-3">Chat langsung dengan tim kami</p>
                                 <Link
-                                    href="https://wa.me/6285119457138"
+                                    href={`https://wa.me/62${settings.contact_whatsapp?.replace(/^0/, '').replace(/-/g, '')}`}
                                     target="_blank"
                                     className="inline-flex items-center gap-2 text-primary-500 hover:underline text-sm"
                                 >
                                     <MessageCircle className="w-4 h-4" />
-                                    WhatsApp: 0851-1945-7138
+                                    {settings.contact_whatsapp || '0851-1945-7138'}
                                 </Link>
                             </div>
 
@@ -111,7 +117,7 @@ export default function ContactPage() {
                                     <Mail className="w-6 h-6 text-primary-500" />
                                 </div>
                                 <h3 className="font-semibold text-neutral-800 mb-2">Email</h3>
-                                <p className="text-neutral-600 text-sm">support@infiatin.store</p>
+                                <p className="text-neutral-600 text-sm">{settings.contact_email || 'support@infiatin.store'}</p>
                             </div>
                         </div>
 

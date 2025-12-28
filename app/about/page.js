@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Shield, Truck, Award, Users, Target, Heart, MapPin, Phone, Mail, Clock } from 'lucide-react';
@@ -28,6 +29,14 @@ const team = [
 ];
 
 export default function AboutPage() {
+    const [settings, setSettings] = useState({});
+
+    useEffect(() => {
+        fetch('/api/settings')
+            .then(res => res.json())
+            .then(data => setSettings(data))
+            .catch(err => console.error('Failed to load settings:', err));
+    }, []);
     return (
         <>
             <Header />
@@ -166,7 +175,7 @@ export default function AboutPage() {
                                     <MapPin className="w-6 h-6 text-primary-500" />
                                 </div>
                                 <h3 className="font-semibold text-neutral-800 mb-2">Alamat</h3>
-                                <p className="text-sm text-neutral-500">GQ7C+793, Cikomprang, Desa Tegalsari, Sidareja, Cilacap, Jawa Tengah 53261</p>
+                                <p className="text-sm text-neutral-500">{settings.store_address || 'Loading...'}</p>
                             </div>
                             <div className="bg-white rounded-xl p-6 text-center shadow-sm">
                                 <div className="w-12 h-12 bg-primary-100 rounded-xl flex items-center justify-center mx-auto mb-4">
@@ -174,15 +183,15 @@ export default function AboutPage() {
                                 </div>
                                 <h3 className="font-semibold text-neutral-800 mb-2">Telepon</h3>
                                 <p className="text-sm text-neutral-500"></p>
-                                <p className="text-sm text-neutral-500">0851-1945-7138 (WhatsApp)</p>
+                                <p className="text-sm text-neutral-500">{settings.contact_whatsapp || '0851-1945-7138'} (WhatsApp)</p>
                             </div>
                             <div className="bg-white rounded-xl p-6 text-center shadow-sm">
                                 <div className="w-12 h-12 bg-primary-100 rounded-xl flex items-center justify-center mx-auto mb-4">
                                     <Clock className="w-6 h-6 text-primary-500" />
                                 </div>
                                 <h3 className="font-semibold text-neutral-800 mb-2">Jam Operasional</h3>
-                                <p className="text-sm text-neutral-500">Buka Setiap Hari</p>
-                                <p className="text-sm text-neutral-500">06.30 – 21.00 WIB</p>
+                                <p className="text-sm text-neutral-500">{settings.operating_hours?.split(':')[0] || 'Buka Setiap Hari'}</p>
+                                <p className="text-sm text-neutral-500">{settings.operating_hours?.split(':')[1]?.trim() || '06.30 – 21.00 WIB'}</p>
                             </div>
                         </div>
                     </div>

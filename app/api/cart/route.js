@@ -10,7 +10,7 @@ import { verifyAuth, assertUserCanTransact } from '@/lib/auth';
 async function getAuthUser(request) {
     const auth = await verifyAuth(request);
     if (!auth.success) return null;
-    return { user_id: auth.user.id, ...auth.user };
+    return { user_id: auth.users.id, ...auth.user };
 }
 
 // GET /api/cart - Get user's cart
@@ -24,7 +24,7 @@ export async function GET(request) {
         const cartItems = await prisma.carts.findMany({
             where: { user_id: user.userId },
             include: {
-                product: {
+                products: {
                     select: {
                         id: true,
                         name: true,
@@ -155,7 +155,7 @@ export async function PUT(request) {
 
         const cartItem = await prisma.carts.findFirst({
             where: { id: cartItemId, user_id: user.userId },
-            include: { product: true, variant: true },
+            include: { products: true, variant: true },
         });
 
         if (!cartItem) {

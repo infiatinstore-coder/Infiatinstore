@@ -87,7 +87,7 @@ export async function POST(request) {
                 variantId: variantId || null
             },
             include: {
-                product: {
+                products: {
                     select: {
                         name: true,
                         image: true
@@ -131,7 +131,7 @@ export async function GET(request) {
                 notified: false
             },
             include: {
-                product: {
+                products: {
                     select: {
                         id: true,
                         name: true,

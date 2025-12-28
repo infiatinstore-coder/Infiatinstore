@@ -38,7 +38,7 @@ export async function POST(request) {
 
         if (user) {
             // User exists - update profile if needed
-            if (!user.avatarUrl && picture) {
+            if (!user.avatar_url && picture) {
                 user = await prisma.users.update({
                     where: { email },
                     data: {
@@ -99,12 +99,12 @@ export async function POST(request) {
         // Set cookie
         const response = NextResponse.json({
             success: true,
-            user: {
+            users: {
                 id: user.id,
                 email: user.email,
                 name: user.name,
                 role: user.role,
-                avatar_url: user.avatarUrl
+                avatar_url: user.avatar_url
             },
             message: 'Login successful'
         });

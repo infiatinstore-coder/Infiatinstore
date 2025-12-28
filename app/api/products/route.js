@@ -39,9 +39,9 @@ export async function GET(request) {
         }
 
         if (minPrice || maxPrice) {
-            where.basePrice = {};
-            if (minPrice) where.basePrice.gte = parseFloat(minPrice);
-            if (maxPrice) where.basePrice.lte = parseFloat(maxPrice);
+            where.base_price = {};
+            if (minPrice) where.base_price.gte = parseFloat(minPrice);
+            if (maxPrice) where.base_price.lte = parseFloat(maxPrice);
         }
 
         // Build orderBy
@@ -68,7 +68,7 @@ export async function GET(request) {
                 skip: (page - 1) * limit,
                 take: limit,
                 include: {
-                    category: {
+                    categories: {
                         select: { id: true, name: true, slug: true },
                     },
                     _count: {

@@ -56,7 +56,7 @@ export async function POST(request) {
 
             if (user) {
                 // Check if user needs to complete profile (new 2-step registration)
-                if (user.status === 'PENDING' || !user.name || !user.passwordHash) {
+                if (user.status === 'PENDING' || !user.name || !user.password_hash) {
                     // Update status to UNVERIFIED (phone verified but profile incomplete)
                     await prisma.users.update({
                         where: { id: user.id },
@@ -78,7 +78,7 @@ export async function POST(request) {
                 const response = NextResponse.json({
                     success: true,
                     message: result.message,
-                    user: safeUser,
+                    users: safeUser,
                     token,
                 });
 

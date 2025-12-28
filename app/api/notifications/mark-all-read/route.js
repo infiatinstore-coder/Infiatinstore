@@ -15,7 +15,7 @@ export async function POST(request) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
-        await notificationService.markAllAsRead(auth.user.id);
+        await notificationService.markAllAsRead(auth.users.id);
 
         return NextResponse.json({
             success: true

@@ -18,7 +18,7 @@ export async function PUT(request, { params }) {
         const review = await prisma.reviews.findFirst({
             where: {
                 id: reviewId,
-                user_id: auth.user.id,
+                user_id: auth.users.id,
             },
         });
 
@@ -44,7 +44,7 @@ export async function PUT(request, { params }) {
                 ...(comment && { comment }),
             },
             include: {
-                user: {
+                users: {
                     select: {
                         id: true,
                         name: true,
@@ -55,7 +55,7 @@ export async function PUT(request, { params }) {
 
         return NextResponse.json({
             message: 'Review berhasil diperbarui',
-            review: updatedReview,
+            reviews: updatedReview,
         });
     } catch (error) {
         console.error('Update review error:', error);
@@ -77,7 +77,7 @@ export async function DELETE(request, { params }) {
         const review = await prisma.reviews.findFirst({
             where: {
                 id: reviewId,
-                user_id: auth.user.id,
+                user_id: auth.users.id,
             },
         });
 

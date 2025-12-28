@@ -22,8 +22,8 @@ export async function GET(request) {
         let userId = null;
         try {
             const auth = await verifyAuth(request);
-            if (auth.success && auth.user) {
-                userId = auth.user.id;
+            if (auth.success && auth.users) {
+                userId = auth.users.id;
             }
         } catch {
             // Not authenticated, continue without userId

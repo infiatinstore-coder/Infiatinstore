@@ -135,7 +135,7 @@ export async function GET() {
                 port: process.env.SMTP_PORT,
                 secure: process.env.SMTP_SECURE === 'true',
                 from: process.env.SMTP_FROM || process.env.SMTP_USER,
-                user: process.env.SMTP_USER ? `${process.env.SMTP_USER.substring(0, 5)}***` : 'not set',
+                users: process.env.SMTP_USER ? `${process.env.SMTP_USER.substring(0, 5)}***` : 'not set',
             },
             message: connectionOk ? 'SMTP ready' : 'SMTP connection failed'
         });

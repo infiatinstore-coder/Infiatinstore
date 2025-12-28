@@ -25,7 +25,7 @@ export async function POST(request, { params }) {
         const existingHelpful = await prisma.reviewHelpful.findFirst({
             where: {
                 reviewId,
-                user_id: auth.user.id,
+                user_id: auth.users.id,
             },
         });
 
@@ -55,7 +55,7 @@ export async function POST(request, { params }) {
                 prisma.reviewHelpful.create({
                     data: {
                         reviewId,
-                        user_id: auth.user.id,
+                        user_id: auth.users.id,
                     },
                 }),
                 prisma.reviews.update({

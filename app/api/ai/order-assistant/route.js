@@ -28,18 +28,18 @@ export async function POST(request) {
 
         if (action === 'summary') {
             // Get order summary with AI insights
-            const result = await getOrderSummary(orderId, auth.user.id);
+            const result = await getOrderSummary(orderId, auth.users.id);
             return NextResponse.json(result);
         }
 
         if (action === 'ask' && question) {
             // Answer a question about the order
-            const result = await answerOrderQuestion(orderId, question, auth.user.id);
+            const result = await answerOrderQuestion(orderId, question, auth.users.id);
             return NextResponse.json(result);
         }
 
         // Default: get summary
-        const result = await getOrderSummary(orderId, auth.user.id);
+        const result = await getOrderSummary(orderId, auth.users.id);
         return NextResponse.json(result);
     } catch (error) {
         console.error('[AI Order Assistant API] Error:', error);
@@ -67,7 +67,7 @@ export async function GET(request) {
             );
         }
 
-        const result = await getOrderSummary(orderId, auth.user.id);
+        const result = await getOrderSummary(orderId, auth.users.id);
         return NextResponse.json(result);
     } catch (error) {
         console.error('[AI Order Assistant API] Error:', error);

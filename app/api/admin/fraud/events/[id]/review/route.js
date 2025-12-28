@@ -23,7 +23,7 @@ export async function PATCH(request, { params }) {
             where: { id },
             data: {
                 status: action === 'dismiss' ? 'DISMISSED' : 'CONFIRMED',
-                reviewed_by: auth.user.id,
+                reviewed_by: auth.users.id,
                 reviewed_at: new Date(),
                 notes
             }

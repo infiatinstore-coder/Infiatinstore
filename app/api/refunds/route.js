@@ -20,21 +20,21 @@ export const GET = asyncHandler(async function GET(request) {
         return ApiResponse.error('Unauthorized', 401);
     }
 
-    const isAdmin = ['ADMIN', 'SUPER_ADMIN'].includes(auth.user.role);
+    const isAdmin = ['ADMIN', 'SUPER_ADMIN'].includes(auth.users.role);
 
-    const where = isAdmin ? {} : { user_id: auth.user.id };
+    const where = isAdmin ? {} : { user_id: auth.users.id };
 
     const refunds = await prisma.refund_requests.findMany({
         where,
         include: {
-            order: {
+            orders: {
                 select: {
                     orderNumber: true,
                     total: true,
                     created_at: true
                 }
             },
-            user: {
+            users: {
                 select: {
                     name: true,
                     email: true
@@ -68,7 +68,7 @@ export const POST = asyncHandler(async function POST(request) {
     const order = await prisma.orders.findFirst({
         where: {
             id: orderId,
-            user_id: auth.user.id
+            user_id: auth.users.id
         },
         include: {
             refundRequests: true
@@ -97,7 +97,7 @@ export const POST = asyncHandler(async function POST(request) {
     const refund = await prisma.refund_requests.create({
         data: {
             orderId,
-            user_id: auth.user.id,
+            user_id: auth.users.id,
             reason,
             refundType,
             amount: order.total,
@@ -105,7 +105,7 @@ export const POST = asyncHandler(async function POST(request) {
             status: 'PENDING'
         },
         include: {
-            order: {
+            orders: {
                 select: {
                     orderNumber: true
                 }

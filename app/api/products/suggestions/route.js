@@ -70,7 +70,7 @@ export async function GET(request) {
                     name: p.name,
                     slug: p.slug,
                     image: p.images?.[0] || null,
-                    price: Number(p.salePrice || p.basePrice),
+                    price: Number(p.sale_price || p.base_price),
                 })),
                 categories: categories.map(c => ({
                     id: c.id,

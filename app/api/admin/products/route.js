@@ -13,7 +13,7 @@ export async function GET(request) {
     try {
         // Verify admin access
         const auth = await verifyAuth(request);
-        if (!auth.success || !['ADMIN', 'SUPER_ADMIN'].includes(auth.user.role)) {
+        if (!auth.success || !['ADMIN', 'SUPER_ADMIN'].includes(auth.users.role)) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
@@ -50,7 +50,7 @@ export async function GET(request) {
                 skip: (page - 1) * limit,
                 take: limit,
                 include: {
-                    category: {
+                    categories: {
                         select: { id: true, name: true },
                     },
                     variants: true,
@@ -67,19 +67,19 @@ export async function GET(request) {
             id: product.id,
             name: product.name,
             slug: product.slug,
-            category: product.category?.name || '-',
-            category_id: product.categoryId,
-            base_price: Number(product.basePrice),
-            sale_price: product.salePrice ? Number(product.salePrice) : null,
+            category: product.categories?.name || '-',
+            category_id: product.categoriesId,
+            base_price: Number(product.base_price),
+            sale_price: product.sale_price ? Number(product.sale_price) : null,
             stock: product.stock,
             variantsCount: product.variants.length,
             totalVariantStock: product.variants.reduce((sum, v) => sum + v.stock, 0),
             images: product.images,
             status: product.status,
-            is_featured: product.isFeatured,
+            is_featured: product.is_featured,
             reviewCount: product._count.reviews,
             sold_count: product._count.orderItems,
-            created_at: product.createdAt,
+            created_at: product.created_at,
         }));
 
         return NextResponse.json({
@@ -105,7 +105,7 @@ export async function POST(request) {
     try {
         // Verify admin access
         const auth = await verifyAuth(request);
-        if (!auth.success || !['ADMIN', 'SUPER_ADMIN'].includes(auth.user.role)) {
+        if (!auth.success || !['ADMIN', 'SUPER_ADMIN'].includes(auth.users.role)) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
@@ -170,14 +170,14 @@ export async function POST(request) {
                 } : undefined,
             },
             include: {
-                category: { select: { name: true } },
+                categories: { select: { name: true } },
                 variants: true,
             },
         });
 
         return NextResponse.json({
             message: 'Produk berhasil ditambahkan',
-            product: {
+            products: {
                 id: product.id,
                 name: product.name,
                 slug: product.slug,

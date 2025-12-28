@@ -14,7 +14,7 @@ export async function GET(request) {
     try {
         // Verify admin auth
         const auth = await verifyAuth(request);
-        if (!auth.success || !['ADMIN', 'SUPER_ADMIN'].includes(auth.user.role)) {
+        if (!auth.success || !['ADMIN', 'SUPER_ADMIN'].includes(auth.users.role)) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
@@ -44,7 +44,7 @@ export async function GET(request) {
         const ordersByDate = {};
 
         orders.forEach(order => {
-            const dateKey = order.createdAt.toISOString().split('T')[0];
+            const dateKey = order.created_at.toISOString().split('T')[0];
 
             if (!salesByDate[dateKey]) {
                 salesByDate[dateKey] = 0;
@@ -88,7 +88,7 @@ export async function GET(request) {
         const topProducts = await prisma.order_items.groupBy({
             by: ['productId'],
             where: {
-                order: {
+                orders: {
                     created_at: { gte: startDate },
                     status: { in: ['PAID', 'PROCESSING', 'SHIPPED', 'DELIVERED', 'COMPLETED'] },
                 },

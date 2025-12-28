@@ -12,7 +12,7 @@ import { slugify } from '@/lib/utils';
 export async function GET(request) {
     try {
         const auth = await verifyAuth(request);
-        if (!auth.success || !['ADMIN', 'SUPER_ADMIN'].includes(auth.user.role)) {
+        if (!auth.success || !['ADMIN', 'SUPER_ADMIN'].includes(auth.users.role)) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
@@ -21,7 +21,7 @@ export async function GET(request) {
             include: {
                 products: {
                     include: {
-                        product: {
+                        products: {
                             select: { name: true },
                         },
                     },
@@ -52,7 +52,7 @@ export async function GET(request) {
 export async function POST(request) {
     try {
         const auth = await verifyAuth(request);
-        if (!auth.success || !['ADMIN', 'SUPER_ADMIN'].includes(auth.user.role)) {
+        if (!auth.success || !['ADMIN', 'SUPER_ADMIN'].includes(auth.users.role)) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
@@ -88,7 +88,7 @@ export async function POST(request) {
                 products: products?.length > 0 ? {
                     create: products.map(p => ({
                         product_id: p.productId,
-                        sale_price: p.salePrice,
+                        sale_price: p.sale_price,
                         stock_limit: p.stockLimit,
                     })),
                 } : undefined,

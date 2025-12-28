@@ -12,12 +12,12 @@ import { createExcelFromJSON, generateExcelBuffer } from '@/lib/excel-helpers';
 
 export const GET = requireAuth(async function GET(request, context) {
     try {
-        if (context.user.role !== 'ADMIN' && context.user.role !== 'SUPER_ADMIN') {
+        if (context.users.role !== 'ADMIN' && context.users.role !== 'SUPER_ADMIN') {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
         }
 
         const products = await prisma.products.findMany({
-            include: { category: { select: { name: true } } }
+            include: { categories: { select: { name: true } } }
         });
 
         const data = products.map(p => ({
@@ -27,8 +27,8 @@ export const GET = requireAuth(async function GET(request, context) {
             description: p.description,
             category_id: p.categoryId,
             categoryName: p.category?.name || '',
-            base_price: Number(p.basePrice),
-            sale_price: p.salePrice ? Number(p.salePrice) : null,
+            base_price: Number(p.base_price),
+            sale_price: p.sale_price ? Number(p.sale_price) : null,
             stock: p.stock,
             weight: p.weight,
             images: JSON.stringify(p.images),

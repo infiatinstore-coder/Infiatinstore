@@ -9,7 +9,7 @@ export async function GET(request, { params }) {
         const product = await prisma.products.findUnique({
             where: { slug },
             include: {
-                category: {
+                categories: {
                     select: { id: true, name: true, slug: true },
                 },
                 variants: {
@@ -18,7 +18,7 @@ export async function GET(request, { params }) {
                 reviews: {
                     where: { status: 'APPROVED' },
                     include: {
-                        user: {
+                        users: {
                             select: { id: true, name: true, avatar_url: true },
                         },
                     },
@@ -45,20 +45,20 @@ export async function GET(request, { params }) {
         // Get related products
         const relatedProducts = await prisma.products.findMany({
             where: {
-                category_id: product.categoryId,
+                category_id: product.categoriesId,
                 id: { not: product.id },
                 status: 'ACTIVE',
             },
             take: 4,
             include: {
-                category: {
+                categories: {
                     select: { name: true, slug: true },
                 },
             },
         });
 
         return NextResponse.json({
-            product: {
+            products: {
                 ...product,
                 rating: avgRating._avg.rating || 0,
                 reviewCount: avgRating._count.rating,

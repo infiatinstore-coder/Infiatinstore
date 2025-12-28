@@ -47,7 +47,7 @@ export async function POST(request) {
 
         // Get user with password
         const user = await prisma.users.findUnique({
-            where: { id: auth.user.id },
+            where: { id: auth.users.id },
             select: { id: true, email: true, password_hash: true, name: true }
         });
 
@@ -68,7 +68,7 @@ export async function POST(request) {
 
         // Verify password
         const bcrypt = require('bcryptjs');
-        const isValidPassword = await bcrypt.compare(password, user.passwordHash);
+        const isValidPassword = await bcrypt.compare(password, user.password_hash);
         if (!isValidPassword) {
             return NextResponse.json(
                 { error: 'Password tidak sesuai' },
@@ -189,7 +189,7 @@ export async function PUT(request) {
             }
         });
 
-        console.log('✅ Email changed successfully for user:', user.id);
+        console.log('✅ Email changed successfully for users:', user.id);
 
         return NextResponse.json({
             success: true,

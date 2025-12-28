@@ -20,7 +20,7 @@ export async function GET(request) {
         const before = searchParams.get('before'); // cursor for pagination
 
         const where = {
-            user_id: auth.user.id,
+            user_id: auth.users.id,
         };
 
         if (orderId) {
@@ -28,7 +28,7 @@ export async function GET(request) {
         }
 
         if (before) {
-            where.createdAt = { lt: new Date(before) };
+            where.created_at = { lt: new Date(before) };
         }
 
         const messages = await prisma.chat_messages.findMany({
@@ -40,7 +40,7 @@ export async function GET(request) {
         // Mark unread messages as read
         await prisma.chat_messages.updateMany({
             where: {
-                user_id: auth.user.id,
+                user_id: auth.users.id,
                 is_admin: true, // Only mark admin messages as read
                 read_at: null,
             },
@@ -50,7 +50,7 @@ export async function GET(request) {
         // Get unread count
         const unreadCount = await prisma.chat_messages.count({
             where: {
-                user_id: auth.user.id,
+                user_id: auth.users.id,
                 is_admin: true,
                 read_at: null,
             },
@@ -62,7 +62,7 @@ export async function GET(request) {
                 message: m.message,
                 image_url: m.imageUrl,
                 is_admin: m.isAdmin,
-                created_at: m.createdAt,
+                created_at: m.created_at,
             })),
             unreadCount,
         });
@@ -92,7 +92,7 @@ export async function POST(request) {
 
         const chatMessage = await prisma.chat_messages.create({
             data: {
-                user_id: auth.user.id,
+                user_id: auth.users.id,
                 order_id: orderId || null,
                 message: message || '',
                 image_url: imageUrl || null,
@@ -107,7 +107,7 @@ export async function POST(request) {
                 message: chatMessage.message,
                 image_url: chatMessage.imageUrl,
                 is_admin: chatMessage.isAdmin,
-                created_at: chatMessage.createdAt,
+                created_at: chatMessage.created_at,
             },
         });
     } catch (error) {

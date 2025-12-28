@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Phone, MapPin, Instagram, Facebook, Twitter } from 'lucide-react';
 
@@ -26,6 +27,15 @@ const footerLinks = {
 };
 
 export default function Footer() {
+    const [settings, setSettings] = useState({});
+
+    useEffect(() => {
+        // Fetch settings from API
+        fetch('/api/settings')
+            .then(res => res.json())
+            .then(data => setSettings(data))
+            .catch(err => console.error('Failed to load settings:', err));
+    }, []);
     return (
         <footer className="bg-neutral-900 text-neutral-300 mt-auto">
             {/* Trust Badges */}
@@ -78,29 +88,29 @@ export default function Footer() {
                     <div className="col-span-2 md:col-span-3 lg:col-span-2">
                         <Link href="/" className="flex items-center gap-2 mb-4">
                             <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center p-1 shadow-sm">
-                                <img src="/logo-infiatin.png" alt="Infiatin Store" className="w-full h-full object-contain" />
+                                <img src="/logo-infiatin.png" alt={settings.store_name || 'Infiatin Store'} className="w-full h-full object-contain" />
                             </div>
                             <span className="font-display text-xl font-bold text-white">
                                 Infiatin<span className="text-primary-500">Store</span>
                             </span>
                         </Link>
                         <p className="text-neutral-400 mb-2 max-w-sm font-medium text-primary-400">
-                            Dekat & Bersahabat
+                            {settings.store_tagline || 'Dekat & Bersahabat'}
                         </p>
                         <p className="text-neutral-400 mb-6 max-w-sm text-sm">
-                            Pusat Kurma & Oleh-Oleh Haji terlengkap di Sidareja. Menyediakan produk berkualitas dengan harga terbaik untuk kebutuhan Ramadhan Anda.
+                            {settings.store_description || 'Pusat Kurma & Oleh-Oleh Haji terlengkap di Sidareja.'}
                         </p>
                         <div className="space-y-2 text-sm">
-                            <a href="https://wa.me/6285119457138" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-primary-500 transition-colors">
+                            <a href={`https://wa.me/62${settings.contact_whatsapp?.replace(/^0/, '').replace(/-/g, '')}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-primary-500 transition-colors">
                                 <Phone className="w-4 h-4" />
-                                0851-1945-7138 (WhatsApp)
+                                {settings.contact_whatsapp || '0851-1945-7138'} (WhatsApp)
                             </a>
                             <p className="flex items-start gap-2">
                                 <MapPin className="w-4 h-4 mt-0.5 flex-shrink-0" />
-                                <span>GQ7C+793, Cikomprang, Desa Tegalsari, Sidareja, Cilacap, Jawa Tengah 53261</span>
+                                <span>{settings.store_address || 'Sidareja, Cilacap, Jawa Tengah'}</span>
                             </p>
                             <p className="flex items-center gap-2 text-primary-400">
-                                🕐 Buka Setiap Hari: 06.30 – 21.00 WIB
+                                🕐 {settings.operating_hours || 'Buka Setiap Hari: 06.30 – 21.00 WIB'}
                             </p>
                         </div>
                     </div>
@@ -151,33 +161,39 @@ export default function Footer() {
                     <div>
                         <h4 className="font-semibold text-white mb-4">Ikuti Kami</h4>
                         <div className="flex gap-3">
-                            <a
-                                href="https://instagram.com/infiatinstore"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="w-10 h-10 bg-neutral-800 rounded-lg flex items-center justify-center hover:bg-primary-500 transition-colors"
-                                aria-label="Instagram"
-                            >
-                                <Instagram className="w-5 h-5" />
-                            </a>
-                            <a
-                                href="https://facebook.com/infiatinstore"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="w-10 h-10 bg-neutral-800 rounded-lg flex items-center justify-center hover:bg-primary-500 transition-colors"
-                                aria-label="Facebook"
-                            >
-                                <Facebook className="w-5 h-5" />
-                            </a>
-                            <a
-                                href="https://twitter.com/infiatinstore"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="w-10 h-10 bg-neutral-800 rounded-lg flex items-center justify-center hover:bg-primary-500 transition-colors"
-                                aria-label="Twitter"
-                            >
-                                <Twitter className="w-5 h-5" />
-                            </a>
+                            {settings.social_instagram && (
+                                <a
+                                    href={settings.social_instagram}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="w-10 h-10 bg-neutral-800 rounded-lg flex items-center justify-center hover:bg-primary-500 transition-colors"
+                                    aria-label="Instagram"
+                                >
+                                    <Instagram className="w-5 h-5" />
+                                </a>
+                            )}
+                            {settings.social_facebook && (
+                                <a
+                                    href={settings.social_facebook}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="w-10 h-10 bg-neutral-800 rounded-lg flex items-center justify-center hover:bg-primary-500 transition-colors"
+                                    aria-label="Facebook"
+                                >
+                                    <Facebook className="w-5 h-5" />
+                                </a>
+                            )}
+                            {settings.social_twitter && (
+                                <a
+                                    href={settings.social_twitter}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="w-10 h-10 bg-neutral-800 rounded-lg flex items-center justify-center hover:bg-primary-500 transition-colors"
+                                    aria-label="Twitter"
+                                >
+                                    <Twitter className="w-5 h-5" />
+                                </a>
+                            )}
                         </div>
                     </div>
                 </div>

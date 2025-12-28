@@ -28,9 +28,9 @@ export async function GET(request) {
         const wishlist = await prisma.wishlists.findMany({
             where: { user_id: user.id },
             include: {
-                product: {
+                products: {
                     include: {
-                        category: true,
+                        categories: true,
                     }
                 }
             },
@@ -112,9 +112,9 @@ export async function POST(request) {
                 product_id: productId
             },
             include: {
-                product: {
+                products: {
                     include: {
-                        category: true
+                        categories: true
                     }
                 }
             }

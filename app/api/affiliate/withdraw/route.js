@@ -21,7 +21,7 @@ export const POST = requireAuth(async function POST(request, context) {
 
         // Get affiliate info
         const affiliate = await prisma.affiliates.findUnique({
-            where: { user_id: context.user.id }
+            where: { user_id: context.users.id }
         });
 
         if (!affiliate) {
@@ -82,7 +82,7 @@ export const POST = requireAuth(async function POST(request, context) {
                 id: withdrawal.id,
                 amount: parseFloat(withdrawal.amount),
                 status: withdrawal.status,
-                created_at: withdrawal.createdAt
+                created_at: withdrawal.created_at
             }
         });
 
@@ -102,7 +102,7 @@ export const POST = requireAuth(async function POST(request, context) {
 export const GET = requireAuth(async function GET(request, context) {
     try {
         const affiliate = await prisma.affiliates.findUnique({
-            where: { user_id: context.user.id }
+            where: { user_id: context.users.id }
         });
 
         if (!affiliate) {
@@ -126,7 +126,7 @@ export const GET = requireAuth(async function GET(request, context) {
                 bank_account: w.bankAccount,
                 proof_url: w.proofUrl,
                 processed_at: w.processedAt,
-                created_at: w.createdAt
+                created_at: w.created_at
             }))
         });
 

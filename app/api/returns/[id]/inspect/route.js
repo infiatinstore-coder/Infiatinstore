@@ -20,7 +20,7 @@ export async function POST(request, { params }) {
         const data = await request.json();
 
         const result = await returnManager.inspectReturnedItem(id, {
-            inspectedBy: auth.user.id,
+            inspectedBy: auth.users.id,
             ...data
         });
 

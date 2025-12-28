@@ -96,7 +96,7 @@ export async function POST(request) {
         // Set cookie
         const response = NextResponse.json({
             message: 'Registrasi berhasil',
-            user: updatedUser,
+            users: updatedUser,
             token: jwtToken,
         });
 

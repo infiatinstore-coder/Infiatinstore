@@ -63,7 +63,7 @@ export async function POST(request) {
 
         // Get current user with password
         const user = await prisma.users.findUnique({
-            where: { id: auth.user.id },
+            where: { id: auth.users.id },
             select: { id: true, email: true, password_hash: true }
         });
 
@@ -75,7 +75,7 @@ export async function POST(request) {
         }
 
         // Verify old password
-        const isValidPassword = await bcrypt.compare(oldPassword, user.passwordHash);
+        const isValidPassword = await bcrypt.compare(oldPassword, user.password_hash);
         if (!isValidPassword) {
             return NextResponse.json(
                 { error: 'Password lama tidak sesuai' },
@@ -92,7 +92,7 @@ export async function POST(request) {
             data: { password_hash: newPasswordHash }
         });
 
-        console.log('✅ Password changed for user:', user.email);
+        console.log('✅ Password changed for users:', user.email);
 
         return NextResponse.json({
             success: true,

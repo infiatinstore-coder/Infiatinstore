@@ -20,7 +20,7 @@ export async function POST(request, { params }) {
         const data = await request.json();
 
         const result = await returnManager.sellerRespond(id, {
-            sellerId: auth.user.id,
+            sellerId: auth.users.id,
             ...data
         });
 
