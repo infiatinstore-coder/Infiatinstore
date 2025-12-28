@@ -42,7 +42,7 @@
         {
             "parameters": {
                 "method": "POST",
-                "url": "http://localhost:3123/api/sendText",
+                "url": "https://waha.infiya.store/api/sendText",
                 "sendHeaders": true,
                 "headerParameters": {
                     "parameters": [

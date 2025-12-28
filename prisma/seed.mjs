@@ -11,7 +11,11 @@ function uuid() {
 async function main() {
     console.log('🌱 Mulai seeding database oleh-oleh Haji & Umroh...');
 
-    // Create Admin User
+    // ===================================================================
+    // USERS SEED DATA
+    // ===================================================================
+
+    // 1. Super Admin Account
     const adminPassword = await bcrypt.hash('admin123', 10);
     const admin = await prisma.users.upsert({
         where: { email: 'admin@infiatin.store' },
@@ -20,7 +24,7 @@ async function main() {
             id: uuid(),
             email: 'admin@infiatin.store',
             password_hash: adminPassword,
-            name: 'Admin Infiatin Store',
+            name: 'Administrator',
             phone: '081234567890',
             role: 'SUPER_ADMIN',
             status: 'ACTIVE',
@@ -28,18 +32,18 @@ async function main() {
             updated_at: new Date(),
         },
     });
-    console.log('✅ Admin user created:', admin.email);
+    console.log('✅ Super Admin created:', admin.email, '(Password: admin123)');
 
-    // Create Demo Customer
-    const customerPassword = await bcrypt.hash('password123', 10);
+    // 2. Regular Customer Account (untuk testing)
+    const customerPassword = await bcrypt.hash('customer123', 10);
     const customer = await prisma.users.upsert({
-        where: { email: 'demo@infiatin.store' },
+        where: { email: 'customer@infiatin.store' },
         update: {},
         create: {
             id: uuid(),
-            email: 'demo@infiatin.store',
+            email: 'customer@infiatin.store',
             password_hash: customerPassword,
-            name: 'Demo Customer',
+            name: 'Ahmad Wijaya',
             phone: '081987654321',
             role: 'CUSTOMER',
             status: 'ACTIVE',
@@ -47,7 +51,7 @@ async function main() {
             updated_at: new Date(),
         },
     });
-    console.log('✅ Demo customer created:', customer.email);
+    console.log('✅ Test Customer created:', customer.email, '(Password: customer123)');
 
     // 1. Create Categories
     const categoriesData = [
