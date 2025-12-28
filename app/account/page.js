@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import {
     User,
@@ -33,11 +33,38 @@ export default function AccountPage() {
     const [isEditing, setIsEditing] = useState(false);
     const [avatarUploading, setAvatarUploading] = useState(false);
     const [avatarUrl, setAvatarUrl] = useState(user?.avatarUrl || null);
+    const [stats, setStats] = useState({
+        orders: 0,
+        wishlist: 0,
+        addresses: 0
+    });
     const [formData, setFormData] = useState({
         name: user?.name || '',
         email: user?.email || '',
         phone: user?.phone || '',
     });
+
+    // Fetch real user stats
+    useEffect(() => {
+        if (isAuthenticated) {
+            fetchUserStats();
+        }
+    }, [isAuthenticated]);
+
+    const fetchUserStats = async () => {
+        try {
+            const token = localStorage.getItem('auth-token');
+            const res = await fetch('/api/account/stats', {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            if (res.ok) {
+                const data = await res.json();
+                setStats(data);
+            }
+        } catch (error) {
+            console.error('Failed to fetch stats:', error);
+        }
+    };
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -109,6 +136,13 @@ export default function AccountPage() {
         } finally {
             setAvatarUploading(false);
         }
+    };
+
+    // Format date helper
+    const formatDate = (dateString) => {
+        if (!dateString) return 'Tidak tersedia';
+        const options = { year: 'numeric', month: 'long', day: 'numeric' };
+        return new Date(dateString).toLocaleDateString('id-ID', options);
     };
 
     return (
@@ -244,23 +278,23 @@ export default function AccountPage() {
                                     />
                                     <Input
                                         label="Tanggal Bergabung"
-                                        value="16 Desember 2024"
+                                        value={formatDate(user?.created_at)}
                                         disabled
                                     />
                                 </div>
 
-                                {/* Stats */}
+                                {/* Stats - Now Dynamic */}
                                 <div className="grid grid-cols-3 gap-4 mt-8 pt-8 border-t border-neutral-100">
                                     <div className="text-center">
-                                        <p className="text-2xl font-bold text-primary-500">12</p>
+                                        <p className="text-2xl font-bold text-primary-500">{stats.orders}</p>
                                         <p className="text-sm text-neutral-500">Total Pesanan</p>
                                     </div>
                                     <div className="text-center">
-                                        <p className="text-2xl font-bold text-primary-500">5</p>
+                                        <p className="text-2xl font-bold text-primary-500">{stats.wishlist}</p>
                                         <p className="text-sm text-neutral-500">Wishlist</p>
                                     </div>
                                     <div className="text-center">
-                                        <p className="text-2xl font-bold text-primary-500">2</p>
+                                        <p className="text-2xl font-bold text-primary-500">{stats.addresses}</p>
                                         <p className="text-sm text-neutral-500">Alamat</p>
                                     </div>
                                 </div>
