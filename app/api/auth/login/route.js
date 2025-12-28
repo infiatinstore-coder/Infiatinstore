@@ -92,7 +92,7 @@ export async function POST(request) {
         // Create response with cookie
         const response = NextResponse.json({
             message: 'Login berhasil! Selamat datang kembali 👋',
-            users: userData,
+            user: userData,
             token,
         });
 

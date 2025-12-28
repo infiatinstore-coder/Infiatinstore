@@ -88,6 +88,8 @@ export async function GET(request) {
                 });
                 return {
                     ...product,
+                    base_price: Number(product.base_price),
+                    sale_price: product.sale_price ? Number(product.sale_price) : null,
                     rating: avgRating._avg.rating || 0,
                     reviewCount: product._count.reviews,
                 };
